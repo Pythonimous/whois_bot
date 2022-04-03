@@ -5,7 +5,7 @@
 __author__ = "Pythonimous"
 
 
-from telegram.ext import Updater, MessageHandler, ChatMemberHandler, Filters
+from telegram.ext import Updater, MessageHandler, CommandHandler, Filters
 from telegram import Bot
 import logging
 import json
@@ -92,6 +92,15 @@ class GatekeeperBot:
                 self.bot.banChatMember(chat_id, user_id,
                                        until_date=banned_until)
 
+    def _start(self, update, context):
+        self.bot.sendMessage(update.message.chat.id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.")
+
+    def _help(self, update, context):
+        self.bot.sendMessage(update.message.chat.id, "Я работаю просто.\n"
+                                                     "Каждый, кто заходит в МОЙ чат, должен представиться с #whois"
+                                                     "за 5 слов и более. У него три попытки. Не смог? Бан на сутки :)\n"
+                                                     "За дополнительным функционалом обращайтесь к моему автору: https://github.com/Pythonimous")
+
     def _new_user_callback(self, update, context):
         """ Add a new user into to_introduce list """
         logger.info("New users added!")
@@ -112,6 +121,8 @@ class GatekeeperBot:
 
     def start(self):
         """ Set up and start the bot """
+        self.updater.dispatcher.add_handler(CommandHandler("start", self._start))
+        self.updater.dispatcher.add_handler(CommandHandler("help", self._help))
         self.updater.dispatcher.add_handler(MessageHandler(Filters.text, self._gatekeep_callback))
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members,
                                                            self._new_user_callback))
@@ -121,8 +132,8 @@ class GatekeeperBot:
 
         self.updater.start_webhook(listen="0.0.0.0",
                                    port=self.config.PORT,
-                                   url_path=self.config.token)
-        self.updater.bot.set_webhook('WhoIsBot' + self.config.token)
+                                   url_path=self.config.token,
+                                   webhook_url="whois-gatekeeper.herokuapp.com/" + self.config.token)
         # self.updater.start_polling()
         self.updater.idle()
 
