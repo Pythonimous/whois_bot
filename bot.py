@@ -69,6 +69,7 @@ class GatekeeperBot:
                                                update.message.from_user.id, update.message.text))
 
         message_text = update.message.text or "a"
+        message_id = update.message.message_id
         chat_id = update.message.chat.id
         user_id = update.message.from_user.id
         user_firstname = update.message.from_user.first_name
@@ -85,6 +86,7 @@ class GatekeeperBot:
                                                             format(user_firstname))
             else:
                 self.config.to_introduce.remove(user_id)
+                self.bot.deleteMessage(chat_id, message_id)
                 del self.config.violations[user_id]
                 self.bot.sendMessage(chat_id, "Я предупреждал, {}! Попробуешь ещё через 24 часа.".
                                               format(user_firstname))
@@ -97,7 +99,7 @@ class GatekeeperBot:
 
     def _help(self, update, context):
         self.bot.sendMessage(update.message.chat.id, "Я работаю просто.\n"
-                                                     "Каждый, кто заходит в МОЙ чат, должен представиться с #whois"
+                                                     "Каждый, кто заходит в МОЙ чат, должен представиться с #whois "
                                                      "за 5 слов и более. У него три попытки. Не смог? Бан на сутки :)\n"
                                                      "За дополнительным функционалом обращайтесь к моему автору: https://github.com/Pythonimous")
 
