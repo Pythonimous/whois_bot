@@ -50,6 +50,19 @@ class GatekeeperBot:
         # Enable scheduling
         self.scheduler = BackgroundScheduler()
 
+    def _start(self, update, context):
+        """ /start command """
+        self.bot.sendMessage(update.message.chat.id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.\n"
+                                                     "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉")
+
+    def _help(self, update, context):
+        """ /help command """
+        self.bot.sendMessage(update.message.chat.id, "Я работаю просто.\n"
+                                                     "Каждый, кто заходит в МОЙ чат, должен представиться с #whois "
+                                                     "за 5 слов и более. У него три попытки. Не смог? Бан на сутки! 😊\n"
+                                                     "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉\n"
+                                                     "Я живу здесь: https://github.com/Pythonimous/whois_bot")
+
     def _warn_user(self, update):
         """ Warn user of their 1st / 2nd #whois violation """
         chat_id = update.message.chat.id
@@ -63,6 +76,7 @@ class GatekeeperBot:
             return "Не испытывай моё терпение, @{}!".format(user_name)
 
     def _remove_user(self, chat_id, user_id):
+        """ Remove user from to_introduce and violations lists """
         if chat_id in self.config.to_introduce:
             for user in self.config.to_introduce[chat_id]:
                 if user['id'] == user_id:
@@ -73,6 +87,7 @@ class GatekeeperBot:
                 del self.config.violations[chat_id][user_id]
 
     def _gatekeep_callback(self, update, context):
+        """ Manage messages based on #whois state """
         message_text = update.message.text or "a"
         message_id = update.message.message_id
         chat_id = update.message.chat.id
@@ -83,7 +98,7 @@ class GatekeeperBot:
                                                update.message.from_user.id, update.message.text))
 
         if chat_id in self.config.to_introduce:
-            if any([user['id'] == user_id for user in self.config.to_introduce[chat_id]]) and user_id not in self.config.admins:
+            if any([user['id'] == user_id for user in self.config.to_introduce[chat_id]]):
                 if "#whois" in message_text and len(message_text.replace("#whois", "").strip()) > 13:
                     self._remove_user(chat_id, user_id)
 
@@ -100,18 +115,8 @@ class GatekeeperBot:
                     self.bot.banChatMember(chat_id, user_id,
                                            until_date=banned_until)
 
-    def _start(self, update, context):
-        self.bot.sendMessage(update.message.chat.id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.\n"
-                                                     "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉")
-
-    def _help(self, update, context):
-        self.bot.sendMessage(update.message.chat.id, "Я работаю просто.\n"
-                                                     "Каждый, кто заходит в МОЙ чат, должен представиться с #whois "
-                                                     "за 5 слов и более. У него три попытки. Не смог? Бан на сутки! 😊\n"
-                                                     "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉\n"
-                                                     "Я живу здесь: https://github.com/Pythonimous/whois_bot")
-
     def _autoban_callback(self):
+        """ Automatically ban users that haven't introduced themselves in 24 hours """
         current_time = time.time()
         for chat_id in self.config.to_introduce:
             for user in self.config.to_introduce[chat_id]:
@@ -144,9 +149,11 @@ class GatekeeperBot:
         self._remove_user(update.message.chat.id, removed_member_id)
 
     def _error_callback(self, update, context):
+        """ Log errors in the console """
         logger.warning('Update "%s" caused error "%s"', update, context.error)
 
     def setup_scheduler(self):
+        """ Set up and start automatic ban scheduler """
         self.scheduler.add_job(self._autoban_callback, 'interval', hours=4)
         self.scheduler.start()
 
