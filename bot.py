@@ -123,19 +123,19 @@ class GatekeeperBot:
         """ Set up and start the bot """
         self.updater.dispatcher.add_handler(CommandHandler("start", self._start))
         self.updater.dispatcher.add_handler(CommandHandler("help", self._help))
-        self.updater.dispatcher.add_handler(MessageHandler(filters = Filters.text & Filters.attachment, callback=self._gatekeep_callback))
+        self.updater.dispatcher.add_handler(MessageHandler(filters=Filters.text | Filters.attachment, callback=self._gatekeep_callback))
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members,
                                                            self._new_user_callback))
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.left_chat_member,
                                                            self._removed_user_callback))
         self.updater.dispatcher.add_error_handler(self._error_callback)
 
-        self.updater.start_webhook(listen="0.0.0.0",
-                                   port=self.config.PORT,
-                                   url_path=self.config.token,
-                                   webhook_url="whois-gatekeeper.herokuapp.com/" + self.config.token)
-        # self.updater.start_polling()
-        self.updater.idle()
+        # self.updater.start_webhook(listen="0.0.0.0",
+        #                           port=self.config.PORT,
+        #                           url_path=self.config.token,
+        #                           webhook_url="whois-gatekeeper.herokuapp.com/" + self.config.token)
+        self.updater.start_polling()
+        # self.updater.idle()
 
 
 def main():
