@@ -13,9 +13,6 @@ import json
 import time
 import os
 
-import sys
-from glob import glob
-
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
@@ -49,7 +46,6 @@ class GatekeeperBot:
     def __init__(self, file_path):
         self.config = BotConfig(file_path)
         self.updater = Updater(self.config.token, use_context=True)
-        self.dispatcher = self.updater.dispatcher
         self.bot = Bot(self.config.token)
 
     def _warn_user(self, update):
@@ -97,13 +93,16 @@ class GatekeeperBot:
                                        until_date=banned_until)
 
     def _start(self, update, context):
-        self.bot.sendMessage(update.message.chat.id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.")
+        self.bot.sendMessage(update.message.chat.id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.\n"
+                                                     "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором :)")
 
     def _help(self, update, context):
         self.bot.sendMessage(update.message.chat.id, "Я работаю просто.\n"
                                                      "Каждый, кто заходит в МОЙ чат, должен представиться с #whois "
-                                                     "за 5 слов и более. У него три попытки. Не смог? Бан на сутки :)\n"
-                                                     "За дополнительным функционалом обращайтесь к моему автору: https://github.com/Pythonimous")
+                                                     "за 5 слов и более. У него три попытки. Не смог? Бан на сутки!\n"
+                                                     "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором :)\n"
+                                                     "За дополнительным функционалом обращайтесь к моему автору:"
+                                                     "https://github.com/Pythonimous")
 
     def _new_user_callback(self, update, context):
         """ Add a new user into to_introduce list """
@@ -128,11 +127,12 @@ class GatekeeperBot:
         """ Set up and start the bot """
         self.updater.dispatcher.add_handler(CommandHandler("start", self._start))
         self.updater.dispatcher.add_handler(CommandHandler("help", self._help))
-        self.updater.dispatcher.add_handler(MessageHandler(filters=Filters.text | Filters.attachment, callback=self._gatekeep_callback))
+        self.updater.dispatcher.add_handler(MessageHandler(Filters.text & (~Filters.status_update),
+                                                           self._gatekeep_callback))
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members,
-                                                           self._new_user_callback))
+                                                           self._new_user_callback), group=1)
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.left_chat_member,
-                                                           self._removed_user_callback))
+                                                           self._removed_user_callback), group=2)
         self.updater.dispatcher.add_error_handler(self._error_callback)
 
         self.updater.start_webhook(listen="0.0.0.0",
