@@ -6,6 +6,7 @@ __author__ = "Pythonimous"
 
 
 from telegram.ext import Updater, MessageHandler, CommandHandler, Filters
+from apscheduler.schedulers.background import BackgroundScheduler
 from telegram import Bot
 import logging
 import json
@@ -16,7 +17,6 @@ import os
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
-
 logger = logging.getLogger(__name__)
 
 
@@ -47,52 +47,56 @@ class GatekeeperBot:
         self.updater = Updater(self.config.token, use_context=True)
         self.bot = Bot(self.config.token)
 
+        # Enable scheduling
+        self.scheduler = BackgroundScheduler()
+
     def _warn_user(self, update):
         """ Warn user of their 1st / 2nd #whois violation """
         chat_id = update.message.chat.id
         user_id = update.message.from_user.id
-        user_name = update.message.from_user.first_name
+        user_name = update.message.from_user.username or update.message.from_user.first_name
         self.bot.deleteMessage(update.message.chat.id, update.message.message_id)
         self.config.violations[chat_id][user_id] += 1
         if self.config.violations[chat_id].get(user_id, 0) == 1:
-            return "Привет, {}!".format(user_name)
+            return "Привет, @{}!".format(user_name)
         elif self.config.violations[chat_id].get(user_id, 0) == 2:
-            return "Не испытывай моё терпение, {}!".format(user_name)
+            return "Не испытывай моё терпение, @{}!".format(user_name)
 
     def _remove_user(self, chat_id, user_id):
         if chat_id in self.config.to_introduce:
-            if user_id in self.config.to_introduce[chat_id]:
-                self.config.to_introduce[chat_id].remove(user_id)
+            for user in self.config.to_introduce[chat_id]:
+                if user['id'] == user_id:
+                    self.config.to_introduce[chat_id].remove(user)
+                    break
         if chat_id in self.config.violations:
             if user_id in self.config.violations[chat_id]:
                 del self.config.violations[chat_id][user_id]
 
     def _gatekeep_callback(self, update, context):
-        """ Remove any non-#whois message from a new user / 24h ban user for 3 violations """
-        logger.info("User %s (%s) said: %s" % (update.message.from_user.first_name,
-                                               update.message.from_user.id, update.message.text))
-
         message_text = update.message.text or "a"
         message_id = update.message.message_id
         chat_id = update.message.chat.id
         user_id = update.message.from_user.id
-        user_firstname = update.message.from_user.first_name
+        user_name = update.message.from_user.username or update.message.from_user.first_name
+        """ Remove any non-#whois message from a new user / 24h ban user for 3 violations """
+        logger.info("User %s (%s) said: %s" % (user_name,
+                                               update.message.from_user.id, update.message.text))
 
         if chat_id in self.config.to_introduce:
-            if user_id in self.config.to_introduce[chat_id] and user_id not in self.config.admins:
+            if any([user['id'] == user_id for user in self.config.to_introduce[chat_id]]) and user_id not in self.config.admins:
                 if "#whois" in message_text and len(message_text.replace("#whois", "").strip()) > 13:
                     self._remove_user(chat_id, user_id)
+                    self.bot.sendMessage(chat_id, "Добро пожаловать, @{}!".format(user_name))
 
                 elif self.config.violations[chat_id].get(user_id, 0) < 2:
                     warning = self._warn_user(update)
                     if "#whois" not in message_text or len(message_text.split()) - 1 < 5:
-                        self.bot.sendMessage(chat_id, warning + "\nСначала представься за 5+ слов с хештегом #whois.".
-                                                                format(user_firstname))
+                        self.bot.sendMessage(chat_id, warning + "\nСначала представься за 5+ слов с хештегом #whois.")
                 else:
                     self._remove_user(chat_id, user_id)
                     self.bot.deleteMessage(chat_id, message_id)
-                    self.bot.sendMessage(chat_id, "Я предупреждал, {}!  Посиди-ка в бане сутки 😊".
-                                                  format(user_firstname))
+                    self.bot.sendMessage(chat_id, "Я предупреждал, @{}!  Посиди-ка в бане сутки 😊".
+                                                  format(user_name))
                     banned_until = time.time() + 60 * 60 * 24
                     self.bot.banChatMember(chat_id, user_id,
                                            until_date=banned_until)
@@ -106,8 +110,18 @@ class GatekeeperBot:
                                                      "Каждый, кто заходит в МОЙ чат, должен представиться с #whois "
                                                      "за 5 слов и более. У него три попытки. Не смог? Бан на сутки! 😊\n"
                                                      "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉\n"
-                                                     "За дополнительным функционалом обратись к моему автору: "
-                                                     "https://github.com/Pythonimous")
+                                                     "Я живу здесь: https://github.com/Pythonimous/whois_bot")
+
+    def _autoban_callback(self):
+        current_time = time.time()
+        for chat_id in self.config.to_introduce:
+            for user in self.config.to_introduce[chat_id]:
+                if current_time >= user['ban_at']:
+                    self.bot.sendMessage(chat_id, f"Banned {user['name']} for a week (no #whois in 24 hours)")
+                    banned_until = current_time + 60 * 60 * 24 * 7
+                    self.bot.banChatMember(chat_id, user['id'],
+                                           until_date=banned_until)
+                    self._remove_user(chat_id, user['id'])
 
     def _new_user_callback(self, update, context):
         """ Add a new user into to_introduce list """
@@ -115,7 +129,9 @@ class GatekeeperBot:
         self.config.to_introduce[update.message.chat.id] = []
         self.config.violations[update.message.chat.id] = {}
         for new_member in update.message.new_chat_members:
-            self.config.to_introduce[update.message.chat.id].append(new_member.id)
+            self.config.to_introduce[update.message.chat.id].append({"id": new_member.id,
+                                                                     "name": new_member.username or new_member.first_name,
+                                                                     "ban_at": time.time() + 60 * 60 * 24})
             self.config.violations[update.message.chat.id][new_member.id] = 0
 
     def _removed_user_callback(self, update, context):
@@ -126,6 +142,10 @@ class GatekeeperBot:
 
     def _error_callback(self, update, context):
         logger.warning('Update "%s" caused error "%s"', update, context.error)
+
+    def setup_scheduler(self):
+        self.scheduler.add_job(self._autoban_callback, 'interval', hours=4)
+        self.scheduler.start()
 
     def start(self):
         """ Set up and start the bot """
@@ -152,6 +172,7 @@ def main():
 
     bot_file = "config.json"
     bot = GatekeeperBot(bot_file)
+    bot.setup_scheduler()
     bot.start()
 
 
