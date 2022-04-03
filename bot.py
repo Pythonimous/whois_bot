@@ -123,7 +123,7 @@ class GatekeeperBot:
         """ Set up and start the bot """
         self.updater.dispatcher.add_handler(CommandHandler("start", self._start))
         self.updater.dispatcher.add_handler(CommandHandler("help", self._help))
-        self.updater.dispatcher.add_handler(MessageHandler(Filters.all, self._gatekeep_callback))
+        self.updater.dispatcher.add_handler(MessageHandler(filters = Filters.text & Filters.attachment, callback=self._gatekeep_callback))
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members,
                                                            self._new_user_callback))
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.left_chat_member,
