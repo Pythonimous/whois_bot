@@ -130,12 +130,12 @@ class GatekeeperBot:
                                                            self._removed_user_callback))
         self.updater.dispatcher.add_error_handler(self._error_callback)
 
-        # self.updater.start_webhook(listen="0.0.0.0",
-        #                           port=self.config.PORT,
-        #                           url_path=self.config.token,
-        #                           webhook_url="whois-gatekeeper.herokuapp.com/" + self.config.token)
-        self.updater.start_polling()
-        # self.updater.idle()
+        self.updater.start_webhook(listen="0.0.0.0",
+                                   port=self.config.PORT,
+                                   url_path=self.config.token,
+                                   webhook_url="whois-gatekeeper.herokuapp.com/" + self.config.token)
+        # self.updater.start_polling()
+        self.updater.idle()
 
 
 def main():
