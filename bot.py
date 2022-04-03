@@ -58,7 +58,7 @@ class GatekeeperBot:
         self.bot.deleteMessage(update.message.chat.id, update.message.message_id)
         self.config.violations[chat_id][user_id] += 1
         if self.config.violations[chat_id].get(user_id, 0) == 1:
-            return "Привет, @{}!".format(user_name)
+            return "Ошибочка вышла, @{}!".format(user_name)
         elif self.config.violations[chat_id].get(user_id, 0) == 2:
             return "Не испытывай моё терпение, @{}!".format(user_name)
 
@@ -86,7 +86,6 @@ class GatekeeperBot:
             if any([user['id'] == user_id for user in self.config.to_introduce[chat_id]]) and user_id not in self.config.admins:
                 if "#whois" in message_text and len(message_text.replace("#whois", "").strip()) > 13:
                     self._remove_user(chat_id, user_id)
-                    self.bot.sendMessage(chat_id, "Добро пожаловать, @{}!".format(user_name))
 
                 elif self.config.violations[chat_id].get(user_id, 0) < 2:
                     warning = self._warn_user(update)
@@ -129,10 +128,14 @@ class GatekeeperBot:
         self.config.to_introduce[update.message.chat.id] = []
         self.config.violations[update.message.chat.id] = {}
         for new_member in update.message.new_chat_members:
+            user_name = new_member.username or new_member.first_name
             self.config.to_introduce[update.message.chat.id].append({"id": new_member.id,
                                                                      "name": new_member.username or new_member.first_name,
                                                                      "ban_at": time.time() + 60 * 60 * 24})
             self.config.violations[update.message.chat.id][new_member.id] = 0
+            self.bot.sendMessage(update.message.chat.id, "Добро пожаловать, @{}!\n"
+                                                         "Сначала представься с хештегом #whois за 5 слов и больше, "
+                                                         "чтобы мы знали, кто ты ☺️".format(user_name))
 
     def _removed_user_callback(self, update, context):
         """ If the deleted user hasn't introduced yet, remove them """
