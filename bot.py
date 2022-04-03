@@ -31,7 +31,7 @@ class BotConfig:
         with open(file_path, 'r') as f:
             self.config = json.load(f)
         self.token = os.environ.get('BOT_TOKEN')
-        self.PORT = int(os.environ.get('PORT', '8443'))
+        self.PORT = os.getenv('PORT', default=8443)
         self.admins = self.config["admins"]
         self.to_introduce = []
         self.violations = {}
