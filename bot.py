@@ -76,7 +76,8 @@ class GatekeeperBot:
 
         if user_id in self.config.to_introduce and user_id not in self.config.admins:
             if "#whois" in message_text and len(message_text.replace("#whois", "").strip()) > 13:
-                self.config.to_introduce.remove(user_id)
+                if user_id in self.config.to_introduce:
+                    self.config.to_introduce.remove(user_id)
                 del self.config.violations[user_id]
 
             elif self.config.violations.get(user_id, 0) < 2:
@@ -85,7 +86,8 @@ class GatekeeperBot:
                     self.bot.sendMessage(chat_id, warning + "\nСначала представься за 5+ слов с хештегом #whois.".
                                                             format(user_firstname))
             else:
-                self.config.to_introduce.remove(user_id)
+                if user_id in self.config.to_introduce:
+                    self.config.to_introduce.remove(user_id)
                 self.bot.deleteMessage(chat_id, message_id)
                 del self.config.violations[user_id]
                 self.bot.sendMessage(chat_id, "Я предупреждал, {}! Попробуешь ещё через 24 часа.".
@@ -114,7 +116,8 @@ class GatekeeperBot:
         """ If the deleted user hasn't introduced yet, remove them """
         logger.info("Users deleted!")
         removed_member_id = update.message.left_chat_member.id
-        self.config.to_introduce.remove(removed_member_id)
+        if removed_member_id in self.config.to_introduce:
+            self.config.to_introduce.remove(removed_member_id)
         if removed_member_id in self.config.violations:
             del self.config.violations[removed_member_id]
 
