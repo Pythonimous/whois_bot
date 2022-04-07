@@ -48,8 +48,8 @@ def new_user_callback(update, context):
     for new_member in update.message.new_chat_members:
         user_name = new_member.username or new_member.first_name
         to_introduce[update.message.chat.id].append({"id": new_member.id,
-                                                                 "name": new_member.username or new_member.first_name,
-                                                                 "ban_at": time.time() + 60 * 60 * 24})
+                                                     "name": new_member.username or new_member.first_name,
+                                                     "ban_at": time.time() + 60 * 60 * 24})
         violations[update.message.chat.id][new_member.id] = 0
         bot.sendMessage(update.message.chat.id, "Добро пожаловать, @{}!\n"
                                                 "Сначала представься с хештегом #whois за 5 слов и больше, "
