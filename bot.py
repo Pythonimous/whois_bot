@@ -36,13 +36,14 @@ class GatekeeperBot:
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.left_chat_member,
                                                            remove_users_callback), group=2)
         self.updater.dispatcher.add_error_handler(error)
-
+        """
         self.updater.start_webhook(listen="0.0.0.0",
                                    port=os.getenv('PORT', default=8443),
                                    url_path=self.token,
                                    webhook_url="https://stormy-eyrie-16859.herokuapp.com/" + self.token)
+        """
 
-        #self.updater.start_polling()
+        self.updater.start_polling()
         self.updater.idle()
 
 
