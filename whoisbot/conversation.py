@@ -11,13 +11,14 @@ def start(update, context):
     user_id = update.message.from_user.id
     if update.message.chat.id != update.message.from_user.id:
         bot.deleteMessage(update.message.chat.id, update.message.message_id)
+        return ConversationHandler.END
 
     if not seen_users.get(user_id, []):
         bot.sendMessage(user_id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.\n"
                                  "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉")
         return ConversationHandler.END
-    else:
 
+    else:
         bot.sendMessage(user_id, f"Привет! Ты ещё не представился в чатах:\n"
                                  f"{'; '.join(seen_users[user_id])}.\n"
                                  f"В каком хочешь представиться?\n"
