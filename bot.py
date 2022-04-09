@@ -35,6 +35,7 @@ class GatekeeperBot:
     The bot bans people for 24h after failure to do so 3 times.
     """
     def __init__(self):
+
         self.token = os.environ.get('BOT_TOKEN')
         self.updater = Updater(self.token, use_context=True)
 

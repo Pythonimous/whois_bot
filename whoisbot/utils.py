@@ -18,8 +18,16 @@ def remove_user(chat_id, user_id):
         if user_id in violations[chat_id]:
             del violations[chat_id][user_id]
 
-    if chat_id in seen_users[user_id].values():
-        del seen_users[user_id][chat_id]
+    if user_id in seen_users:
+        to_delete = ""
+        for key, value in seen_users[user_id].items():
+            if chat_id == value:
+                to_delete = key
+                break
+        if to_delete:
+            del seen_users[user_id][to_delete]
+        if not seen_users[user_id]:
+            del seen_users[user_id]
 
 
 def introduce_user(chat_id, user_id):

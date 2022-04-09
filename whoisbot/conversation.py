@@ -9,28 +9,31 @@ currently_introducing = {}
 def start(update, context):
     """ /start command """
     user_id = update.message.from_user.id
-    if user_id not in seen_users:
-        bot.sendMessage(update.message.chat.id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.\n"
-                                                "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉")
+    if update.message.chat.id != update.message.from_user.id:
+        bot.deleteMessage(update.message.chat.id, update.message.message_id)
+    if not seen_users.get(user_id, []):
+        bot.sendMessage(user_id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.\n"
+                                 "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉")
         return ConversationHandler.END
     else:
-        bot.sendMessage(update.message.chat.id, f"Привет! Ты ещё не представился в чатах:\n"
-                                                f"{'; '.join(seen_users[user_id])}.\n"
-                                                f"В каком хочешь представиться?\n"
-                                                f"Или /cancel, чтобы прекратить разговор.")
+
+        bot.sendMessage(user_id, f"Привет! Ты ещё не представился в чатах:\n"
+                                 f"{'; '.join(seen_users[user_id])}.\n"
+                                 f"В каком хочешь представиться?\n"
+                                 f"Или /cancel, чтобы прекратить разговор.")
         return 0
 
 
 def chat(update, context):
     user_id = update.message.from_user.id
     if update.message.text not in seen_users[user_id]:
-        bot.sendMessage(update.message.chat.id, "Не знаю этот чат. Попробуй ещё раз!")
+        bot.sendMessage(update.message.from_user.id, "Не знаю этот чат. Попробуй ещё раз!")
         return 0
     else:
         currently_introducing[user_id] = {"chat_id": seen_users[user_id][update.message.text],
                                           "info": {}}
-        bot.sendMessage(update.message.chat.id, 'Хорошо! Как к тебе обращаться? '
-                                                'Назови имя, или никнейм, если больше нравится.')
+        bot.sendMessage(update.message.from_user.id, 'Хорошо! Как к тебе обращаться? '
+                                                     'Назови имя, или никнейм, если больше нравится.')
         return 1
 
 
@@ -126,7 +129,8 @@ def end_convo(update, context):
     user = update.message.from_user
 
     update.message.reply_text('Спасибо, что познакомились!\nТеперь все про тебя знают больше, '
-                              'и ты можешь писать в чатик :) Велкам!')
+                              'и ты можешь писать в чатик :) Велкам!',
+                              reply_markup=ReplyKeyboardRemove())
 
     chat_id = currently_introducing[user.id]["chat_id"]
 
