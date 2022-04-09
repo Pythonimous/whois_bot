@@ -49,7 +49,7 @@ def new_user_callback(update, context):
         user_name = new_member.username or new_member.first_name
         if user_name != "who_ru_bot":
             sent_message = bot.sendMessage(update.message.chat.id, "Добро пожаловать, @{}!\n"
-                                                                   "Прежде, чем писать сюда, напиши мне в личку.\n"
+                                                                   "Прежде, чем писать сюда, напиши мне /start в личку.\n"
                                                                    "@who_ru_bot. Давай познакомимся ☺️".format(user_name))
             to_introduce[update.message.chat.id].append({"id": new_member.id,
                                                          "name": new_member.username or new_member.first_name,

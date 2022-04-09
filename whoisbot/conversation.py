@@ -11,6 +11,7 @@ def start(update, context):
     user_id = update.message.from_user.id
     if update.message.chat.id != update.message.from_user.id:
         bot.deleteMessage(update.message.chat.id, update.message.message_id)
+
     if not seen_users.get(user_id, []):
         bot.sendMessage(user_id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.\n"
                                  "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉")
