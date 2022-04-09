@@ -52,7 +52,7 @@ def age(update, context):
             "Понял :) Как давно ты в Анталии?"
         )
         return 3
-    except TypeError:
+    except ValueError:
         update.message.reply_text('Не понял тебя. Напиши числом, сколько тебе лет?')
         return 2
 
@@ -76,7 +76,7 @@ def experience(update, context):
             "А в каких технологиях ты силён / сильна? (твой стек)"
         )
         return 6
-    except TypeError:
+    except ValueError:
         update.message.reply_text('Не понял тебя. Напиши числом, сколько лет ты в профессии?')
         return 5
 
