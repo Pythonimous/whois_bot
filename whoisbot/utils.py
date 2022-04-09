@@ -1,4 +1,4 @@
-from .config import bot, to_introduce, violations, logger
+from .config import bot, to_introduce, violations, logger, user_info, seen_users
 import time
 
 
@@ -17,6 +17,40 @@ def remove_user(chat_id, user_id):
     if chat_id in violations:
         if user_id in violations[chat_id]:
             del violations[chat_id][user_id]
+
+    if chat_id in seen_users[user_id]:
+        seen_users[user_id].remove(chat_id)
+
+
+def introduce_user(chat_id, user_id):
+    info_dict = user_info[user_id][chat_id]
+    to_send = make_intro(info_dict)
+    for member in to_introduce[chat_id]:
+        if member["id"] == user_id:
+            bot.deleteMessage(chat_id, member["greeting_id"])
+            bot.sendMessage(chat_id, to_send)
+            remove_user(chat_id, user_id)
+            break
+
+
+def make_intro(info_dict):
+    message = f"#whois @{info_dict['username']}\n"
+    message += f"Имя: {info_dict['name']}\n"
+    message += f"Возраст: {info_dict['age']} лет\n"
+    message += f"В Анталии: {info_dict['in_antalya']}\n"
+    message += f"Специальность: {info_dict['specialty']}\n"
+    message += f"Опыт в специальности: {info_dict['years_experience']}\n"
+    message += f"Стек: {info_dict['stack']}\n"
+    message += f"Последний проект:\n{info_dict['recent_project']}\n"
+    message += f"Хобби:\n{info_dict['hobby']}"
+    if info_dict["hobby_partners"]: message += ", ищет товарищей по хобби."
+    message += "\n"
+    if info_dict["looking_for_job"]:
+        message += "Ищет работу :)\n"
+    else:
+        message += "Не ищет работу :)\n"
+    message += "Добро пожаловать!"
+    return message
 
 
 def warn_user(update):

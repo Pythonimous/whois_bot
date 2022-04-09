@@ -1,6 +1,8 @@
 import os
 from telegram import Bot
 
+from collections import defaultdict
+
 import logging
 
 # Enable logging
@@ -10,5 +12,7 @@ logger = logging.getLogger(__name__)
 
 to_introduce = {}
 violations = {}
+seen_users = defaultdict(dict)
+user_info = defaultdict(dict)
 
 bot = Bot(os.environ.get('BOT_TOKEN'))
