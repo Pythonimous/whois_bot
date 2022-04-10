@@ -14,17 +14,17 @@ from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, Conve
 from whoisbot.utils import error, ban_user
 from whoisbot.conversation import help, start, cancel
 from whoisbot.conversation import (
-    chat,
-    name,
-    age,
-    howlongantalya,
-    specialty,
-    experience,
-    stack,
-    recent_projects,
-    hobby,
-    looking_for_job,
-    end_convo
+    chat, CHAT,
+    name, NAME,
+    age, AGE,
+    howlongantalya, HOW_LONG_ANTALYA,
+    specialty, SPECIALTY,
+    experience, EXPERIENCE,
+    stack, STACK,
+    recent_projects, RECENT_PROJECTS,
+    hobby, HOBBY,
+    hobby_partners, HOBBY_PARTNERS,
+    looking_job, LOOKING_JOB
 )
 from whoisbot.callbacks import gatekeep_callback, remove_users_callback, new_user_callback
 
@@ -46,17 +46,17 @@ class GatekeeperBot:
         conv_handler = ConversationHandler(
             entry_points=[CommandHandler("start", start)],
             states={
-                0: [MessageHandler(Filters.text, chat)],
-                1: [MessageHandler(Filters.text, name)],
-                2: [MessageHandler(Filters.text, age)],
-                3: [MessageHandler(Filters.text, howlongantalya)],
-                4: [MessageHandler(Filters.text, specialty)],
-                5: [MessageHandler(Filters.text, experience)],
-                6: [MessageHandler(Filters.text, stack)],
-                7: [MessageHandler(Filters.text, recent_projects)],
-                8: [MessageHandler(Filters.text, hobby)],
-                9: [MessageHandler(Filters.text, looking_for_job)],
-                10: [MessageHandler(Filters.text, end_convo)],
+                CHAT: [MessageHandler(Filters.text, chat)],
+                NAME: [MessageHandler(Filters.text, name)],
+                AGE: [MessageHandler(Filters.text, age)],
+                HOW_LONG_ANTALYA: [MessageHandler(Filters.text, howlongantalya)],
+                SPECIALTY: [MessageHandler(Filters.text, specialty)],
+                EXPERIENCE: [MessageHandler(Filters.text, experience)],
+                STACK: [MessageHandler(Filters.text, stack)],
+                RECENT_PROJECTS: [MessageHandler(Filters.text, recent_projects)],
+                HOBBY: [MessageHandler(Filters.text, hobby)],
+                HOBBY_PARTNERS: [MessageHandler(Filters.text, hobby_partners)],
+                LOOKING_JOB: [MessageHandler(Filters.text, looking_job)],
             },
             fallbacks=[CommandHandler('cancel', cancel)],
         )

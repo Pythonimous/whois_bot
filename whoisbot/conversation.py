@@ -5,6 +5,9 @@ from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 currently_introducing = {}
 
+CHAT, NAME, AGE, HOW_LONG_ANTALYA, SPECIALTY, EXPERIENCE, STACK,\
+RECENT_PROJECTS, HOBBY, HOBBY_PARTNERS, LOOKING_JOB = range(11)
+
 
 def start(update, context):
     """ /start command """
@@ -23,20 +26,20 @@ def start(update, context):
                                  f"{'; '.join(seen_users[user_id])}.\n"
                                  f"В каком хочешь представиться?\n"
                                  f"Или /cancel, чтобы прекратить разговор.")
-        return 0
+        return CHAT
 
 
 def chat(update, context):
     user_id = update.message.from_user.id
     if update.message.text not in seen_users[user_id]:
         bot.sendMessage(update.message.from_user.id, "Не знаю этот чат. Попробуй ещё раз!")
-        return 0
+        return CHAT
     else:
         currently_introducing[user_id] = {"chat_id": seen_users[user_id][update.message.text],
                                           "info": {}}
         bot.sendMessage(update.message.from_user.id, 'Хорошо! Как к тебе обращаться? '
                                                      'Назови имя, или никнейм, если больше нравится.')
-        return 1
+        return NAME
 
 
 def name(update, context):
@@ -47,7 +50,7 @@ def name(update, context):
         'Хорошо! Сколько тебе лет? (напиши число)',
         reply_markup=ReplyKeyboardRemove(),
     )
-    return 2
+    return AGE
 
 
 def age(update, context):
@@ -56,22 +59,22 @@ def age(update, context):
         update.message.reply_text(
             "Понял :) Как давно ты в Анталии?"
         )
-        return 3
+        return HOW_LONG_ANTALYA
     except ValueError:
         update.message.reply_text('Не понял тебя. Напиши числом, сколько тебе лет?')
-        return 2
+        return AGE
 
 
 def howlongantalya(update, context):
     currently_introducing[update.message.from_user.id]["info"]["in_antalya"] = update.message.text
     update.message.reply_text('Хорошо! Кто ты по специальности?\n(разработчик С++, веб-дизайнер, ... ?')
-    return 4
+    return SPECIALTY
 
 
 def specialty(update, context):
     currently_introducing[update.message.from_user.id]["info"]["specialty"] = update.message.text
     update.message.reply_text('И сколько лет ты уже в этой профессии?')
-    return 5
+    return EXPERIENCE
 
 
 def experience(update, context):
@@ -80,26 +83,26 @@ def experience(update, context):
         update.message.reply_text(
             "А в каких технологиях ты силён / сильна? (твой стек)"
         )
-        return 6
+        return STACK
     except ValueError:
         update.message.reply_text('Не понял тебя. Напиши числом, сколько лет ты в профессии?')
-        return 5
+        return EXPERIENCE
 
 
 def stack(update, context):
     currently_introducing[update.message.from_user.id]["info"]["stack"] = update.message.text
     update.message.reply_text('Ок! Чем занимался / занималась на последних проектах? (мин. 25 слов)')
-    return 7
+    return RECENT_PROJECTS
 
 
 def recent_projects(update, context):
     text = update.message.text
     if len(text.split()) < 25:
         update.message.reply_text('Слишком коротко! Пожалуйста, напиши больше, мне интересно :)')
-        return 7
+        return RECENT_PROJECTS
     currently_introducing[update.message.from_user.id]["info"]["recent_project"] = text
     update.message.reply_text('Чем интересуешься? Какие у тебя увлечения, хобби?')
-    return 8
+    return HOBBY
 
 
 def hobby(update, context):
@@ -108,10 +111,10 @@ def hobby(update, context):
     markup_key = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     update.message.reply_text('Ищешь партнёров по хобби?',
                               reply_markup=markup_key)
-    return 9
+    return HOBBY_PARTNERS
 
 
-def looking_for_job(update, context):
+def hobby_partners(update, context):
     if update.message.text == 'Да':
         currently_introducing[update.message.from_user.id]["info"]["hobby_partners"] = 1
     else:
@@ -120,10 +123,10 @@ def looking_for_job(update, context):
     markup_key = ReplyKeyboardMarkup(reply_keyboard, one_time_keyboard=True)
     update.message.reply_text('И последний вопрос. Ищешь работу?',
                               reply_markup=markup_key)
-    return 10
+    return LOOKING_JOB
 
 
-def end_convo(update, context):
+def looking_job(update, context):
     if update.message.text == 'Да':
         currently_introducing[update.message.from_user.id]["info"]["looking_for_job"] = 1
     else:
