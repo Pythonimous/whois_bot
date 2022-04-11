@@ -1,5 +1,5 @@
-from .config import chats, users
 from .base import new_chatname, new_username
+from .config import chats, users
 from .utils import get_username
 
 

@@ -1,7 +1,9 @@
-from .config import bot, logger, chats, users
-from .base import get_chat_user, user_leaves_chat
 import time
+
 from pymongo.collection import ReturnDocument
+
+from .base import get_chat_user, user_leaves_chat
+from .config import bot, logger, chats, users
 
 
 def error(update, context):

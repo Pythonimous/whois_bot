@@ -1,9 +1,8 @@
-import os
-from telegram import Bot
-
 import logging
+import os
 
 from pymongo import MongoClient
+from telegram import Bot
 
 token = os.environ.get('BOT_TOKEN')
 

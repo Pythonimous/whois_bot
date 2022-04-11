@@ -4,15 +4,11 @@
 
 __author__ = "Pythonimous"
 
-
-import os
-
 from apscheduler.schedulers.background import BackgroundScheduler
-
 from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, ConversationHandler
 
-from whoisbot.utils import error, ban_user
-from whoisbot.conversation import help, start, cancel
+from whoisbot.callbacks import gatekeep_callback, remove_users_callback, new_user_callback
+from whoisbot.config import token
 from whoisbot.conversation import (
     chat, CHAT,
     name, NAME,
@@ -26,9 +22,9 @@ from whoisbot.conversation import (
     hobby_partners, HOBBY_PARTNERS,
     looking_job, LOOKING_JOB
 )
-from whoisbot.callbacks import gatekeep_callback, remove_users_callback, new_user_callback
+from whoisbot.conversation import help, start, cancel
+from whoisbot.utils import error, ban_user
 
-from whoisbot.config import token
 
 class GatekeeperBot:
     """

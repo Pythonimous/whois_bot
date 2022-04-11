@@ -1,6 +1,3 @@
-from pymongo import MongoClient
-from pymongo.collection import ReturnDocument
-
 from .config import chats, users
 
 

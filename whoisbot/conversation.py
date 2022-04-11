@@ -1,7 +1,8 @@
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram.ext import ConversationHandler
+
 from whoisbot.config import bot, logger, users, chats
 from whoisbot.utils import introduce_user
-from telegram.ext import ConversationHandler
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 
 CHAT, NAME, AGE, HOW_LONG_ANTALYA, SPECIALTY, EXPERIENCE, STACK,\
 RECENT_PROJECTS, HOBBY, HOBBY_PARTNERS, LOOKING_JOB = range(11)
