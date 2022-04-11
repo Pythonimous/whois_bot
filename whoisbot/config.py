@@ -1,18 +1,22 @@
 import os
 from telegram import Bot
 
-from collections import defaultdict
-
 import logging
+
+from pymongo import MongoClient
+
+token = os.environ.get('BOT_TOKEN')
 
 # Enable logging
 logging.basicConfig(format='%(asctime)s - %(name)s - %(levelname)s - %(message)s',
                     level=logging.INFO)
 logger = logging.getLogger(__name__)
 
-to_introduce = {}
-violations = {}
-seen_users = defaultdict(dict)
-user_info = defaultdict(dict)
+bot = Bot(token)
 
-bot = Bot(os.environ.get('BOT_TOKEN'))
+client = MongoClient("mongodb://localhost:27017/")
+
+base = client.get_database("gatekeeper_bot")
+
+chats = base["chats"]
+users = base["users"]

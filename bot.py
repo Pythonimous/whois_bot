@@ -28,6 +28,7 @@ from whoisbot.conversation import (
 )
 from whoisbot.callbacks import gatekeep_callback, remove_users_callback, new_user_callback
 
+from whoisbot.config import token
 
 class GatekeeperBot:
     """
@@ -36,8 +37,7 @@ class GatekeeperBot:
     """
     def __init__(self):
 
-        self.token = os.environ.get('BOT_TOKEN')
-        self.updater = Updater(self.token, use_context=True)
+        self.updater = Updater(token, use_context=True)
 
     def start_bot(self):
         """ Set up and start the bot """
@@ -79,7 +79,7 @@ def main():
     """ Set up a bot from a configuration file and start it """
     bot = GatekeeperBot()
     scheduler = BackgroundScheduler()
-    scheduler.add_job(ban_user, 'interval', hours=4)
+    scheduler.add_job(ban_user, 'interval', hours=24)
     scheduler.start()
     bot.start_bot()
 
