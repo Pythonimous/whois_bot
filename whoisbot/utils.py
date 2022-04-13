@@ -38,20 +38,19 @@ def introduce_user(chat_id, user_id):
 
 def make_intro(info_dict):
     message = f"#whois {info_dict['username']}\n"
-    message += f"Имя: {info_dict['name']}\n"
-    message += f"Возраст: {info_dict['age']} лет\n"
-    message += f"В Анталии: {info_dict['in_antalya']}\n"
-    message += f"Специальность: {info_dict['specialty']}\n"
-    message += f"Опыт в специальности: {info_dict['years_experience']}\n"
-    message += f"Стек: {info_dict['stack']}\n"
-    message += f"Последний проект:\n{info_dict['recent_project']}\n"
-    message += f"Хобби:\n{info_dict['hobby']}"
-    if info_dict["hobby_partners"]: message += ", ищет товарищей по хобби."
-    message += "\n"
+    message += f"🎉 К нам присоединился **{info_dict['name']}**, "
+    message += f"{info_dict['age']} лет от роду 🎊\n"
+    message += f"{info_dict['specialty']} __(специальность)__ "
+    message += f"со стажем {info_dict['years_experience']} лет. "
+    message += f"Стек технологий: {info_dict['stack']}.\n"
+    message += f"На последнем проекте: {info_dict['recent_project']}."
+    message += f"Любит {info_dict['hobby']}"
+    if info_dict["hobby_partners"]: message += "; ищет товарищей по хобби"
+    message += ".\n"
+    message += f"В Анталии {info_dict['in_antalya']}.\n"
     if info_dict["looking_for_job"]:
-        message += "Ищет работу :)\n"
-    else:
-        message += "Не ищет работу :)\n"
+        message += "В поиске работы.\n"
+    message += '\n'
     message += "Добро пожаловать!"
     return message
 
