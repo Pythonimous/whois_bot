@@ -4,8 +4,8 @@ from telegram.ext import ConversationHandler
 from whoisbot.config import bot, logger, users, chats
 from whoisbot.utils import introduce_user
 
-CHAT, NAME, AGE, HOW_LONG_ANTALYA, SPECIALTY, EXPERIENCE, STACK,\
-RECENT_PROJECTS, HOBBY, HOBBY_PARTNERS, LOOKING_JOB, RULES = range(12)
+CHAT,  RULES, NAME, AGE, WHERE_FROM, HOW_LONG_ANTALYA, SPECIALTY, EXPERIENCE, STACK,\
+RECENT_PROJECTS, HOBBY, HOBBY_PARTNERS, LOOKING_JOB = range(13)
 
 
 def start(update, _):
@@ -46,7 +46,9 @@ def chat(update, context):
     else:
         users.update_one(filter={"_id": user_id},
                          update={"$set": {"now_introducing": str(chat['_id'])}})
-        if chat["name"] not in ["💻 IT-pros of Anatolia 🇹🇷", "test_whoisbot_2", "whois_test"]:
+        if not any(['test_whoisbot_2' in chat["name"],
+                    'whois_test' in chat["name"],
+                    "IT-pros of Anatolia" in chat["name"]]):
             bot.sendMessage(update.message.from_user.id, 'Хорошо! Как к тебе обращаться? '
                                                          'Назови имя, или никнейм, если больше нравится.')
             return NAME
@@ -91,12 +93,21 @@ def age(update, _):
         users.update_one(filter={"_id": str(update.message.from_user.id)},
                          update={"$set": {f"chats.{chat_id}.info.age": int(update.message.text.strip())}})
         update.message.reply_text(
-            "Понял :) Как давно ты в Анталии?"
+            "Ок! Откуда ты к нам приехал(а)?"
         )
-        return HOW_LONG_ANTALYA
+        return WHERE_FROM
     except ValueError:
         update.message.reply_text('Не понял тебя. Напиши числом, сколько тебе лет?')
         return AGE
+
+
+def wherefrom(update, _):
+    user_id = str(update.message.from_user.id)
+    chat_id = users.find_one({"_id": user_id})["now_introducing"]
+    users.update_one(filter={"_id": str(update.message.from_user.id)},
+                     update={"$set": {f"chats.{chat_id}.info.from": update.message.text}})
+    update.message.reply_text('Понял :) Как давно ты в Анталии?')
+    return HOW_LONG_ANTALYA
 
 
 def howlongantalya(update, _):
@@ -113,7 +124,7 @@ def specialty(update, _):
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
                      update={"$set": {f"chats.{chat_id}.info.specialty": update.message.text}})
-    update.message.reply_text('И сколько лет ты уже в этой профессии?')
+    update.message.reply_text('И сколько лет ты уже в этой профессии? (напиши числом)')
     return EXPERIENCE
 
 

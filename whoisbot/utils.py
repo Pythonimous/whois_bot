@@ -47,11 +47,11 @@ def lowfirst(string):
 
 def make_intro(info_dict):
     message = f"#whois {info_dict['username']}\n"
-    message += f"🎉 К нам присоединился <b>{info_dict['name']}</b>, "
+    message += f"🎉 К нам присоединился <b>{info_dict['name']} ({info_dict['from']})</b>, "
     message += f"{info_dict['age']} лет от роду 🎊\n"
-    message += f"{capfirst(info_dict['specialty'])} со стажем {info_dict['years_experience']} лет. "
+    message += f"{capfirst(info_dict['specialty'])} со стажем {info_dict['years_experience']} лет.\n"
     message += f"Стек технологий: {info_dict['stack']}.\n"
-    message += f"На последнем проекте: {info_dict['recent_project']}.\n"
+    message += f"На последнем проекте {info_dict['recent_project']}.\n"
     message += f"Любит {info_dict['hobby']}"
     if info_dict["hobby_partners"]: message += "; ищет товарищей по хобби"
     message += ".\n"

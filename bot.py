@@ -11,8 +11,10 @@ from whoisbot.callbacks import gatekeep_callback, remove_users_callback, new_use
 from whoisbot.config import token
 from whoisbot.conversation import (
     chat, CHAT,
+    rules, RULES,
     name, NAME,
     age, AGE,
+    wherefrom, WHERE_FROM,
     howlongantalya, HOW_LONG_ANTALYA,
     specialty, SPECIALTY,
     experience, EXPERIENCE,
@@ -20,9 +22,9 @@ from whoisbot.conversation import (
     recent_projects, RECENT_PROJECTS,
     hobby, HOBBY,
     hobby_partners, HOBBY_PARTNERS,
-    looking_job, LOOKING_JOB,
-    rules, RULES
+    looking_job, LOOKING_JOB
 )
+
 from whoisbot.conversation import help, start, cancel
 from whoisbot.utils import error, ban_user
 
@@ -44,8 +46,10 @@ class GatekeeperBot:
             entry_points=[CommandHandler("start", start)],
             states={
                 CHAT: [MessageHandler(Filters.text, chat)],
+                RULES: [MessageHandler(Filters.text, rules)],
                 NAME: [MessageHandler(Filters.text, name)],
                 AGE: [MessageHandler(Filters.text, age)],
+                WHERE_FROM: [MessageHandler(Filters.text, wherefrom)],
                 HOW_LONG_ANTALYA: [MessageHandler(Filters.text, howlongantalya)],
                 SPECIALTY: [MessageHandler(Filters.text, specialty)],
                 EXPERIENCE: [MessageHandler(Filters.text, experience)],
@@ -53,8 +57,7 @@ class GatekeeperBot:
                 RECENT_PROJECTS: [MessageHandler(Filters.text, recent_projects)],
                 HOBBY: [MessageHandler(Filters.text, hobby)],
                 HOBBY_PARTNERS: [MessageHandler(Filters.text, hobby_partners)],
-                LOOKING_JOB: [MessageHandler(Filters.text, looking_job)],
-                RULES: [MessageHandler(Filters.text, rules)]
+                LOOKING_JOB: [MessageHandler(Filters.text, looking_job)]
             },
             fallbacks=[CommandHandler('cancel', cancel)],
         )
