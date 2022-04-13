@@ -5,10 +5,10 @@ from whoisbot.config import bot, logger, users, chats
 from whoisbot.utils import introduce_user
 
 CHAT, NAME, AGE, HOW_LONG_ANTALYA, SPECIALTY, EXPERIENCE, STACK,\
-RECENT_PROJECTS, HOBBY, HOBBY_PARTNERS, LOOKING_JOB = range(11)
+RECENT_PROJECTS, HOBBY, HOBBY_PARTNERS, LOOKING_JOB, RULES = range(12)
 
 
-def start(update, context):
+def start(update, _):
     """ /start command """
     user_id = update.message.from_user.id
     if update.message.chat.id != update.message.from_user.id:
@@ -46,12 +46,31 @@ def chat(update, context):
     else:
         users.update_one(filter={"_id": user_id},
                          update={"$set": {"now_introducing": str(chat['_id'])}})
-        bot.sendMessage(update.message.from_user.id, 'Хорошо! Как к тебе обращаться? '
-                                                     'Назови имя, или никнейм, если больше нравится.')
+        if chat["name"] not in ["💻 IT-pros of Anatolia 🇹🇷", "test_whoisbot_2", "whois_test"]:
+            bot.sendMessage(update.message.from_user.id, 'Хорошо! Как к тебе обращаться? '
+                                                         'Назови имя, или никнейм, если больше нравится.')
+            return NAME
+        else:
+            bot.sendMessage(update.message.from_user.id, "Хорошо! Пожалуйста, сначала ознакомься с правилами чата.")
+            with open('whoisbot/rules.txt', 'r') as r:
+                rules = r.read()
+            bot.sendMessage(update.message.from_user.id, rules)
+            bot.sendMessage(update.message.from_user.id, "Ознакомился с правилами? Напиши пароль, если да.")
+            return RULES
+
+
+def rules(update, _):
+    user_id = str(update.message.from_user.id)
+    if update.message.text.strip().lower() not in {"редиска", "radish"}:
+        update.message.reply_text("Неправильный пароль, читай правила ещё раз :)")
+        return RULES
+    else:
+        bot.sendMessage(user_id, 'Хорошо! Как к тебе обращаться? '
+                                 'Назови имя, или никнейм, если больше нравится.')
         return NAME
 
 
-def name(update, context):
+def name(update, _):
     # определяем пользователя
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
@@ -65,7 +84,7 @@ def name(update, context):
     return AGE
 
 
-def age(update, context):
+def age(update, _):
     try:
         user_id = str(update.message.from_user.id)
         chat_id = users.find_one({"_id": user_id})["now_introducing"]
@@ -80,7 +99,7 @@ def age(update, context):
         return AGE
 
 
-def howlongantalya(update, context):
+def howlongantalya(update, _):
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
@@ -89,7 +108,7 @@ def howlongantalya(update, context):
     return SPECIALTY
 
 
-def specialty(update, context):
+def specialty(update, _):
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
@@ -98,7 +117,7 @@ def specialty(update, context):
     return EXPERIENCE
 
 
-def experience(update, context):
+def experience(update, _):
     try:
         user_id = str(update.message.from_user.id)
         chat_id = users.find_one({"_id": user_id})["now_introducing"]
@@ -113,7 +132,7 @@ def experience(update, context):
         return EXPERIENCE
 
 
-def stack(update, context):
+def stack(update, _):
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
@@ -122,7 +141,7 @@ def stack(update, context):
     return RECENT_PROJECTS
 
 
-def recent_projects(update, context):
+def recent_projects(update, _):
     text = update.message.text
     if len(text.split()) < 25:
         update.message.reply_text('Слишком коротко! Пожалуйста, напиши больше, мне интересно :)')
@@ -135,7 +154,7 @@ def recent_projects(update, context):
     return HOBBY
 
 
-def hobby(update, context):
+def hobby(update, _):
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
@@ -147,7 +166,7 @@ def hobby(update, context):
     return HOBBY_PARTNERS
 
 
-def hobby_partners(update, context):
+def hobby_partners(update, _):
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     if update.message.text == 'Да':
@@ -163,7 +182,7 @@ def hobby_partners(update, context):
     return LOOKING_JOB
 
 
-def looking_job(update, context):
+def looking_job(update, _):
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     if update.message.text == 'Да':
@@ -182,7 +201,7 @@ def looking_job(update, context):
     return ConversationHandler.END
 
 
-def cancel(update, context):
+def cancel(update, _):
     user = update.message.from_user
     logger.info("Пользователь %s отменил разговор.", user.first_name)
 
@@ -194,7 +213,7 @@ def cancel(update, context):
     return ConversationHandler.END
 
 
-def help(update, context):
+def help(update, _):
     """ /help command """
     bot.sendMessage(update.message.chat.id, "Прежде, чем писать в чат, где я админ (!),"
                                             " нужно ответить на несколько простых вопросов.\n"

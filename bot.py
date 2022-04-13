@@ -20,7 +20,8 @@ from whoisbot.conversation import (
     recent_projects, RECENT_PROJECTS,
     hobby, HOBBY,
     hobby_partners, HOBBY_PARTNERS,
-    looking_job, LOOKING_JOB
+    looking_job, LOOKING_JOB,
+    rules, RULES
 )
 from whoisbot.conversation import help, start, cancel
 from whoisbot.utils import error, ban_user
@@ -53,6 +54,7 @@ class GatekeeperBot:
                 HOBBY: [MessageHandler(Filters.text, hobby)],
                 HOBBY_PARTNERS: [MessageHandler(Filters.text, hobby_partners)],
                 LOOKING_JOB: [MessageHandler(Filters.text, looking_job)],
+                RULES: [MessageHandler(Filters.text, rules)]
             },
             fallbacks=[CommandHandler('cancel', cancel)],
         )

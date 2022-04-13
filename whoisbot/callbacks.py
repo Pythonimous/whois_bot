@@ -8,7 +8,7 @@ from .utils import warn_user, get_username
 
 @chatname_changes
 @username_changes
-def gatekeep_callback(update, context):
+def gatekeep_callback(update, _):
     """ Manage messages based on #whois state """
     message_id = update.message.message_id
     chat_id = update.message.chat.id
@@ -36,7 +36,7 @@ def gatekeep_callback(update, context):
 
 
 @chatname_changes
-def remove_users_callback(update, context):
+def remove_users_callback(update, _):
     """ If the deleted user hasn't introduced yet, remove them """
     logger.info("Users deleted!")
 
@@ -51,7 +51,7 @@ def remove_users_callback(update, context):
 
 
 @chatname_changes
-def new_user_callback(update, context):
+def new_user_callback(update, _):
     """ Add a new user into base list """
     logger.info("New users added!")
     for new_member in update.message.new_chat_members:
@@ -62,8 +62,10 @@ def new_user_callback(update, context):
 
         if username != "@who_ru_bot":
             sent_message = bot.sendMessage(update.message.chat.id, "Добро пожаловать, {}!\n"
-                                                                   "Прежде, чем писать сюда, напиши мне /start в личку.\n"
-                                                                   "@who_ru_bot. Давай познакомимся ☺️".format(username))
+                                                                   "Прежде, чем писать сюда, "
+                                                                   "напиши мне /start в личку.\n"
+                                                                   "@who_ru_bot. "
+                                                                   "Давай познакомимся ☺️".format(username))
 
             if not users.count_documents({'_id': str(new_member.id)}):
                 new_user(new_member.id, username)
