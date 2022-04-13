@@ -1,5 +1,6 @@
 import time
 
+import telegram
 from pymongo.collection import ReturnDocument
 
 from .base import get_chat_user, user_leaves_chat
@@ -25,7 +26,7 @@ def introduce_user(chat_id, user_id):
     info_dict["username"] = user_data["username"]
     to_send = make_intro(info_dict)
     bot.deleteMessage(chat_id, user_data["chats"][str(chat_id)]["greeting_id"])
-    bot.sendMessage(chat_id, to_send)
+    bot.sendMessage(chat_id, to_send, parse_mode=telegram.ParseMode.HTML)
     users.update_one(filter={"_id": user_id},
                      update={
                          "$unset": {"now_introducing": 1,
@@ -36,20 +37,26 @@ def introduce_user(chat_id, user_id):
                      })
 
 
+def capfirst(string):  # capitalize() lowercases all the other characters, and we don't want that
+    return string[:1].upper() + string[1:] if string else ''
+
+
+def lowfirst(string):
+    return string[:1].lower() + string[1:] if string else ''
+
+
 def make_intro(info_dict):
     message = f"#whois {info_dict['username']}\n"
-    message += f"🎉 К нам присоединился **{info_dict['name']}**, "
+    message += f"🎉 К нам присоединился <b>{info_dict['name']}</b>, "
     message += f"{info_dict['age']} лет от роду 🎊\n"
-    message += f"{info_dict['specialty']} __(специальность)__ "
-    message += f"со стажем {info_dict['years_experience']} лет. "
+    message += f"{capfirst(info_dict['specialty'])} со стажем {info_dict['years_experience']} лет. "
     message += f"Стек технологий: {info_dict['stack']}.\n"
-    message += f"На последнем проекте: {info_dict['recent_project']}."
+    message += f"На последнем проекте: {info_dict['recent_project']}.\n"
     message += f"Любит {info_dict['hobby']}"
     if info_dict["hobby_partners"]: message += "; ищет товарищей по хобби"
     message += ".\n"
-    message += f"В Анталии {info_dict['in_antalya']}.\n"
-    if info_dict["looking_for_job"]:
-        message += "В поиске работы.\n"
+    message += f"В Анталии {lowfirst(info_dict['in_antalya'])}.\n"
+    if info_dict["looking_for_job"]: message += "В поиске работы.\n"
     message += '\n'
     message += "Добро пожаловать!"
     return message
