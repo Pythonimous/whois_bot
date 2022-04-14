@@ -25,7 +25,7 @@ from whoisbot.conversation import (
     looking_job, LOOKING_JOB,
 )
 
-from whoisbot.conversation import info, help, start, cancel
+from whoisbot.conversation import info, help, start, edit, cancel
 from whoisbot.utils import error, ban_user
 
 
@@ -44,7 +44,8 @@ class GatekeeperBot:
         self.updater.dispatcher.add_handler(CommandHandler("help", help))
 
         conv_handler = ConversationHandler(
-            entry_points=[CommandHandler("start", start)],
+            entry_points=[CommandHandler("start", start),
+                          CommandHandler("edit", edit)],
             states={
                 CHAT: [MessageHandler(Filters.text & (~ Filters.command), chat)],
                 RULES: [MessageHandler(Filters.text & (~ Filters.command), rules)],
