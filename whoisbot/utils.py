@@ -80,9 +80,9 @@ def warn_user(update):
     )
 
     if user_data["chats"][str(chat_id)]["violations"] == 1:
-        return "Ошибочка вышла, @{}!".format(username)
+        return "Ошибочка вышла, {}!".format(username)
     elif user_data["chats"][str(chat_id)]["violations"] == 2:
-        return "Не испытывай моё терпение, @{}!".format(username)
+        return "Не испытывай моё терпение, {}!".format(username)
 
 
 def ban_user():
