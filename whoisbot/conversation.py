@@ -1,4 +1,4 @@
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
 from telegram.ext import ConversationHandler
 
 from whoisbot.config import bot, logger, users, chats
@@ -101,6 +101,7 @@ def age(update, _):
         update.message.reply_text('Не понял тебя. Напиши числом, сколько тебе лет?')
         return AGE
 
+
 def wherefrom(update, _):
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
@@ -124,7 +125,7 @@ def specialty(update, _):
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
                      update={"$set": {f"chats.{chat_id}.info.specialty": update.message.text}})
-    update.message.reply_text('И сколько ты уже в этой профессии?')
+    update.message.reply_text('И сколько лет ты уже в этой профессии? (напиши числом)')
     return EXPERIENCE
 
 
@@ -162,7 +163,7 @@ def recent_projects(update, _):
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
                      update={"$set": {f"chats.{chat_id}.info.recent_project": text}})
-    update.message.reply_text('Чем интересуешься? Какие у тебя увлечения, хобби?')
+    update.message.reply_text('Что любишь делать? Какие у тебя увлечения, хобби?')
     return HOBBY
 
 
@@ -225,11 +226,19 @@ def cancel(update, _):
     return ConversationHandler.END
 
 
-def help(update, _):
-    """ /help command """
+def info(update, _):
+    """ /info command """
     bot.sendMessage(update.message.chat.id, "Прежде, чем писать в чат, где я админ (!),"
                                             " нужно ответить на несколько простых вопросов.\n"
                                             "Ответил? Отлично, теперь все знают, кто ты :)\n"
                                             "Не познакомились за день, или упорно писал в чат до знакомства? Бан 😊\n"
                                             "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором!\n"
                                             "Я живу здесь: https://github.com/Pythonimous/whois_bot")
+
+
+def help(update, _):
+    """ /help command """
+    bot.sendMessage(update.message.chat.id, "Привет! Я понимаю следующие команды:"
+                                            "/start: начать знакомство со мной в одном из чатов, где я тебя ещё не знаю;\n"
+                                            "/cancel: прервать текущую операцию, что бы мы ни делали;"
+                                            "/info: рассказать о себе, и чем я тут вообще занимаюсь :)\n")

@@ -22,10 +22,10 @@ from whoisbot.conversation import (
     recent_projects, RECENT_PROJECTS,
     hobby, HOBBY,
     hobby_partners, HOBBY_PARTNERS,
-    looking_job, LOOKING_JOB
+    looking_job, LOOKING_JOB,
 )
 
-from whoisbot.conversation import help, start, cancel
+from whoisbot.conversation import info, help, start, cancel
 from whoisbot.utils import error, ban_user
 
 
@@ -40,6 +40,7 @@ class GatekeeperBot:
 
     def start_bot(self):
         """ Set up and start the bot """
+        self.updater.dispatcher.add_handler(CommandHandler("info", info))
         self.updater.dispatcher.add_handler(CommandHandler("help", help))
 
         conv_handler = ConversationHandler(
@@ -57,7 +58,7 @@ class GatekeeperBot:
                 RECENT_PROJECTS: [MessageHandler(Filters.text, recent_projects)],
                 HOBBY: [MessageHandler(Filters.text & (~ Filters.command), hobby)],
                 HOBBY_PARTNERS: [MessageHandler(Filters.text & (~ Filters.command), hobby_partners)],
-                LOOKING_JOB: [MessageHandler(Filters.text & (~ Filters.command), looking_job)]
+                LOOKING_JOB: [MessageHandler(Filters.text & (~ Filters.command), looking_job)],
             },
             fallbacks=[CommandHandler('cancel', cancel)],
         )

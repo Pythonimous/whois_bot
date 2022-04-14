@@ -26,11 +26,13 @@ def introduce_user(chat_id, user_id):
     info_dict["username"] = user_data["username"]
     to_send = make_intro(info_dict)
     bot.deleteMessage(chat_id, user_data["chats"][str(chat_id)]["greeting_id"])
-    bot.sendMessage(chat_id, to_send, parse_mode=telegram.ParseMode.HTML)
+    message = bot.sendMessage(chat_id, to_send, parse_mode=telegram.ParseMode.HTML)
+    users.update_one(filter={"_id": user_data["_id"]},
+                     update={"$set": {f"chats.{message.chat.id}.greeting_id": message.id}})
+
     users.update_one(filter={"_id": user_id},
                      update={
                          "$unset": {"now_introducing": 1,
-                                    f"chats.{chat_id}.greeting_id": 1,
                                     f"chats.{chat_id}.ban_at": 1},
                          "$set": {f"chats.{chat_id}.need_intro": 0,
                                   f"chats.{chat_id}.violations": 0}
@@ -76,7 +78,6 @@ def warn_user(update):
             "$inc": {f"chats.{str(chat_id)}.violations": 1}
         }, return_document=ReturnDocument.AFTER
     )
-    print(user_data)
 
     if user_data["chats"][str(chat_id)]["violations"] == 1:
         return "Ошибочка вышла, @{}!".format(username)
