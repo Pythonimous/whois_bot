@@ -1,4 +1,4 @@
-from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove
+from telegram import ReplyKeyboardMarkup, ReplyKeyboardRemove, InlineKeyboardButton, InlineKeyboardMarkup
 from telegram.ext import ConversationHandler
 
 from whoisbot.config import bot, logger, users, chats
@@ -16,24 +16,25 @@ def start(update, _):
         return ConversationHandler.END
 
     user_data = users.find_one(filter={"_id": str(user_id)})
+
     if not user_data:
-        bot.sendMessage(user_id, "Привет! Просто добавь меня в чат, и я сделаю всё сам.\n"
-                                 "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉")
+        update.message.reply_text("Привет! Просто добавь меня в чат, и я сделаю всё сам.\n"
+                                  "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉")
         return ConversationHandler.END
 
     else:
         user_chats = [chat_id for chat_id, info in user_data["chats"].items() if info["need_intro"]]
-        chat_names = [chat["name"] for chat in chats.find({"_id": {"$in": user_chats}})]
-        bot.sendMessage(user_id, f"Привет! Ты ещё не представился в чатах:\n"
-                                 f"{'; '.join(chat_names)}.\n"
-                                 f"В каком хочешь представиться?\n"
-                                 f"Или /cancel, чтобы прекратить разговор.")
+        chat_names = [[chat["name"]] for chat in chats.find({"_id": {"$in": user_chats}})]
+
+        chats_markup = ReplyKeyboardMarkup(chat_names, one_time_keyboard=True)
+        update.message.reply_text(f"Привет! Ты ещё не представился в этих чатах.\n"
+                                  f"\nВ каком хочешь представиться?\n"
+                                  f"Или /cancel, чтобы прекратить разговор.", reply_markup=chats_markup)
         return CHAT
 
 
 def chat(update, context):
-    if update.message.text.strip() == "/cancel":
-        return cancel(update, context)
+
     user_id = str(update.message.from_user.id)
     user_data = users.find_one(filter={"_id": user_id})
     chat = chats.find_one(filter={"name": update.message.text})
@@ -68,7 +69,7 @@ def rules(update, _):
         return RULES
     else:
         bot.sendMessage(user_id, 'Хорошо! Как к тебе обращаться? '
-                                 'Назови имя, или никнейм, если больше нравится.')
+                                 'Назови имя, или никнейм, больше нравится.')
         return NAME
 
 
@@ -80,25 +81,21 @@ def name(update, _):
                      update={"$set": {f"chats.{chat_id}.info.name": update.message.text}})
 
     update.message.reply_text(
-        'Хорошо! Сколько тебе лет? (напиши число)',
+        'Хорошо! Сколько тебе лет?',
         reply_markup=ReplyKeyboardRemove(),
     )
     return AGE
 
 
 def age(update, _):
-    try:
-        user_id = str(update.message.from_user.id)
-        chat_id = users.find_one({"_id": user_id})["now_introducing"]
-        users.update_one(filter={"_id": str(update.message.from_user.id)},
-                         update={"$set": {f"chats.{chat_id}.info.age": int(update.message.text.strip())}})
-        update.message.reply_text(
-            "Ок! Откуда ты к нам приехал(а)?"
-        )
-        return WHERE_FROM
-    except ValueError:
-        update.message.reply_text('Не понял тебя. Напиши числом, сколько тебе лет?')
-        return AGE
+    user_id = str(update.message.from_user.id)
+    chat_id = users.find_one({"_id": user_id})["now_introducing"]
+    users.update_one(filter={"_id": str(update.message.from_user.id)},
+                     update={"$set": {f"chats.{chat_id}.info.age": update.message.text.strip()}})
+    update.message.reply_text(
+        "Ок! Откуда ты к нам приехал(а)?"
+    )
+    return WHERE_FROM
 
 
 def wherefrom(update, _):
@@ -129,18 +126,14 @@ def specialty(update, _):
 
 
 def experience(update, _):
-    try:
-        user_id = str(update.message.from_user.id)
-        chat_id = users.find_one({"_id": user_id})["now_introducing"]
-        users.update_one(filter={"_id": str(update.message.from_user.id)},
-                         update={"$set": {f"chats.{chat_id}.info.years_experience": int(update.message.text.strip())}})
-        update.message.reply_text(
-            "А в каких технологиях ты силён / сильна? (твой стек)"
-        )
-        return STACK
-    except ValueError:
-        update.message.reply_text('Не понял тебя. Напиши числом, сколько лет ты в профессии?')
-        return EXPERIENCE
+    user_id = str(update.message.from_user.id)
+    chat_id = users.find_one({"_id": user_id})["now_introducing"]
+    users.update_one(filter={"_id": str(update.message.from_user.id)},
+                     update={"$set": {f"chats.{chat_id}.info.years_experience": update.message.text.strip()}})
+    update.message.reply_text(
+        "А в каких технологиях ты силён / сильна? (твой стек)"
+    )
+    return STACK
 
 
 def stack(update, _):
@@ -148,8 +141,8 @@ def stack(update, _):
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
                      update={"$set": {f"chats.{chat_id}.info.stack": update.message.text}})
-    update.message.reply_text('Ок! Чем занимался / занималась на последних проектах?\n'
-                              'Можешь дать ссылки на проекты или портфолио! (мин. 25 слов)')
+    update.message.reply_text('Ок! Расскажи, пожалуйста, в 25+ словах, чем занимался(лась) на последних проектах?\n'
+                              'Если есть ссылки (и портфолио), тоже делись :)')
     return RECENT_PROJECTS
 
 

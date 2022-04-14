@@ -45,19 +45,19 @@ class GatekeeperBot:
         conv_handler = ConversationHandler(
             entry_points=[CommandHandler("start", start)],
             states={
-                CHAT: [MessageHandler(Filters.text, chat)],
-                RULES: [MessageHandler(Filters.text, rules)],
-                NAME: [MessageHandler(Filters.text, name)],
-                AGE: [MessageHandler(Filters.text, age)],
-                WHERE_FROM: [MessageHandler(Filters.text, wherefrom)],
-                HOW_LONG_ANTALYA: [MessageHandler(Filters.text, howlongantalya)],
-                SPECIALTY: [MessageHandler(Filters.text, specialty)],
-                EXPERIENCE: [MessageHandler(Filters.text, experience)],
-                STACK: [MessageHandler(Filters.text, stack)],
+                CHAT: [MessageHandler(Filters.text & (~ Filters.command), chat)],
+                RULES: [MessageHandler(Filters.text & (~ Filters.command), rules)],
+                NAME: [MessageHandler(Filters.text & (~ Filters.command), name)],
+                AGE: [MessageHandler(Filters.text & (~ Filters.command), age)],
+                WHERE_FROM: [MessageHandler(Filters.text & (~ Filters.command), wherefrom)],
+                HOW_LONG_ANTALYA: [MessageHandler(Filters.text & (~ Filters.command), howlongantalya)],
+                SPECIALTY: [MessageHandler(Filters.text & (~ Filters.command), specialty)],
+                EXPERIENCE: [MessageHandler(Filters.text & (~ Filters.command), experience)],
+                STACK: [MessageHandler(Filters.text & (~ Filters.command), stack)],
                 RECENT_PROJECTS: [MessageHandler(Filters.text, recent_projects)],
-                HOBBY: [MessageHandler(Filters.text, hobby)],
-                HOBBY_PARTNERS: [MessageHandler(Filters.text, hobby_partners)],
-                LOOKING_JOB: [MessageHandler(Filters.text, looking_job)]
+                HOBBY: [MessageHandler(Filters.text & (~ Filters.command), hobby)],
+                HOBBY_PARTNERS: [MessageHandler(Filters.text & (~ Filters.command), hobby_partners)],
+                LOOKING_JOB: [MessageHandler(Filters.text & (~ Filters.command), looking_job)]
             },
             fallbacks=[CommandHandler('cancel', cancel)],
         )
