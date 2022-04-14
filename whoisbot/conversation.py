@@ -33,30 +33,6 @@ def start(update, _):
         return CHAT
 
 
-def edit(update, _):
-    """ /edit command """
-    user_id = update.message.from_user.id
-    if update.message.chat.id != update.message.from_user.id:
-        bot.deleteMessage(update.message.chat.id, update.message.message_id)
-        return ConversationHandler.END
-
-    user_data = users.find_one(filter={"_id": str(user_id)})
-
-    if not user_data:
-        update.message.reply_text("Привет! Пока у тебя нет чатов, где надо было бы регистрироваться. "
-                                  "Попробуй в другой раз 😉")
-        return ConversationHandler.END
-
-    else:
-        user_chats = [chat_id for chat_id, info in user_data["chats"].items() if not info["need_intro"]]
-        chat_names = [[chat["name"]] for chat in chats.find({"_id": {"$in": user_chats}})]
-
-        chats_markup = ReplyKeyboardMarkup(chat_names, one_time_keyboard=True)
-        update.message.reply_text(f"Привет! В каком чате будешь редактировать инфу?\n"
-                                  f"Или /cancel, чтобы прекратить разговор.", reply_markup=chats_markup)
-        return RULES
-
-
 def chat(update, context):
 
     user_id = str(update.message.from_user.id)
@@ -88,6 +64,7 @@ def chat(update, context):
 
 def rules(update, _):
     user_id = str(update.message.from_user.id)
+
     if update.message.text.strip().lower() not in {"редиска", "radish"}:
         update.message.reply_text("Неправильный пароль, читай правила ещё раз :)")
         return RULES
@@ -263,6 +240,5 @@ def help(update, _):
     """ /help command """
     bot.sendMessage(update.message.chat.id, "Привет! Я понимаю следующие команды:\n"
                                             "/start: начать знакомство со мной в одном из чатов, где я тебя ещё не знаю;\n"
-                                            "/edit: познакомиться со мной заново там, где я тебя уже знаю;\n"
                                             "/cancel: прервать текущую операцию, что бы мы ни делали;\n"
                                             "/info: рассказать о себе, и чем я тут вообще занимаюсь :)\n")

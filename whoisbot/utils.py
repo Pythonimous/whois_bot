@@ -28,15 +28,11 @@ def introduce_user(chat_id, user_id):
     bot.deleteMessage(chat_id, user_data["chats"][str(chat_id)]["greeting_id"])
     message = bot.sendMessage(chat_id, to_send, parse_mode=telegram.ParseMode.HTML)
     users.update_one(filter={"_id": user_data["_id"]},
-                     update={"$set": {f"chats.{message.chat.id}.greeting_id": message.id}})
-
-    users.update_one(filter={"_id": user_id},
-                     update={
-                         "$unset": {"now_introducing": 1,
-                                    f"chats.{chat_id}.ban_at": 1},
-                         "$set": {f"chats.{chat_id}.need_intro": 0,
-                                  f"chats.{chat_id}.violations": 0}
-                     })
+                     update={"$unset": {"now_introducing": 1,
+                                        f"chats.{chat_id}.ban_at": 1},
+                             "$set": {f"chats.{message.chat.id}.greeting_id": message.id,
+                                      f"chats.{chat_id}.need_intro": 0,
+                                      f"chats.{chat_id}.violations": 0}})
 
 
 def capfirst(string):  # capitalize() lowercases all the other characters, and we don't want that
