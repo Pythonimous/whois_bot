@@ -88,15 +88,18 @@ def name(update, _):
 
 
 def age(update, _):
-    user_id = str(update.message.from_user.id)
-    chat_id = users.find_one({"_id": user_id})["now_introducing"]
-    users.update_one(filter={"_id": str(update.message.from_user.id)},
-                     update={"$set": {f"chats.{chat_id}.info.age": update.message.text.strip()}})
-    update.message.reply_text(
-        "Ок! Откуда ты к нам приехал(а)?"
-    )
-    return WHERE_FROM
-
+    try:
+        user_id = str(update.message.from_user.id)
+        chat_id = users.find_one({"_id": user_id})["now_introducing"]
+        users.update_one(filter={"_id": str(update.message.from_user.id)},
+                         update={"$set": {f"chats.{chat_id}.info.age": float(update.message.text.strip())}})
+        update.message.reply_text(
+            "Ок! Откуда ты к нам приехал(а)?"
+        )
+        return WHERE_FROM
+    except ValueError:
+        update.message.reply_text('Не понял тебя. Напиши числом, сколько тебе лет?')
+        return AGE
 
 def wherefrom(update, _):
     user_id = str(update.message.from_user.id)
@@ -121,19 +124,23 @@ def specialty(update, _):
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
                      update={"$set": {f"chats.{chat_id}.info.specialty": update.message.text}})
-    update.message.reply_text('И сколько лет ты уже в этой профессии? (напиши числом)')
+    update.message.reply_text('И сколько ты уже в этой профессии?')
     return EXPERIENCE
 
 
 def experience(update, _):
-    user_id = str(update.message.from_user.id)
-    chat_id = users.find_one({"_id": user_id})["now_introducing"]
-    users.update_one(filter={"_id": str(update.message.from_user.id)},
-                     update={"$set": {f"chats.{chat_id}.info.years_experience": update.message.text.strip()}})
-    update.message.reply_text(
-        "А в каких технологиях ты силён / сильна? (твой стек)"
-    )
-    return STACK
+    try:
+        user_id = str(update.message.from_user.id)
+        chat_id = users.find_one({"_id": user_id})["now_introducing"]
+        users.update_one(filter={"_id": str(update.message.from_user.id)},
+                         update={"$set": {f"chats.{chat_id}.info.years_experience": float(update.message.text.strip())}})
+        update.message.reply_text(
+            "А в каких технологиях ты силён / сильна? (твой стек)"
+        )
+        return STACK
+    except ValueError:
+        update.message.reply_text('Не понял тебя. Напиши числом, сколько лет ты в профессии?')
+        return EXPERIENCE
 
 
 def stack(update, _):
