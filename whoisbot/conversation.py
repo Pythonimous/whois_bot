@@ -92,7 +92,7 @@ def age(update, _):
         user_id = str(update.message.from_user.id)
         chat_id = users.find_one({"_id": user_id})["now_introducing"]
         users.update_one(filter={"_id": str(update.message.from_user.id)},
-                         update={"$set": {f"chats.{chat_id}.info.age": float(update.message.text.strip())}})
+                         update={"$set": {f"chats.{chat_id}.info.age": int(update.message.text.strip())}})
         update.message.reply_text(
             "Ок! Откуда ты к нам приехал(а)?"
         )
@@ -133,7 +133,7 @@ def experience(update, _):
         user_id = str(update.message.from_user.id)
         chat_id = users.find_one({"_id": user_id})["now_introducing"]
         users.update_one(filter={"_id": str(update.message.from_user.id)},
-                         update={"$set": {f"chats.{chat_id}.info.years_experience": float(update.message.text.strip())}})
+                         update={"$set": {f"chats.{chat_id}.info.years_experience": int(update.message.text.strip())}})
         update.message.reply_text(
             "А в каких технологиях ты силён / сильна? (твой стек)"
         )
@@ -181,7 +181,7 @@ def hobby(update, _):
 def hobby_partners(update, _):
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
-    if update.message.text == 'Да':
+    if update.message.text.lower().strip() in ['да', 'yes']:
         users.update_one(filter={"_id": str(update.message.from_user.id)},
                          update={"$set": {f"chats.{chat_id}.info.hobby_partners": 1}})
     else:
@@ -197,7 +197,7 @@ def hobby_partners(update, _):
 def looking_job(update, _):
     user_id = str(update.message.from_user.id)
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
-    if update.message.text == 'Да':
+    if update.message.text.lower().strip() in ['да', 'yes']:
         users.update_one(filter={"_id": str(update.message.from_user.id)},
                          update={"$set": {f"chats.{chat_id}.info.looking_for_job": 1}})
     else:
