@@ -148,7 +148,8 @@ def stack(update, _):
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
                      update={"$set": {f"chats.{chat_id}.info.stack": update.message.text}})
-    update.message.reply_text('Ок! Чем занимался / занималась на последних проектах? (мин. 25 слов)')
+    update.message.reply_text('Ок! Чем занимался / занималась на последних проектах?\n'
+                              'Можешь дать ссылки на проекты или портфолио! (мин. 25 слов)')
     return RECENT_PROJECTS
 
 

@@ -4,9 +4,7 @@
 - тон дружелюбный и уважительный
 - нет рекламе и спаму
 - можно приглашать друзей и коллег - группа открытая
-- при вступлении в группу:
-  - первые 24ч сообщения, содержащие ссылки, будут удаляться (антиспам)
-  - пароль для знакомства с ботом: редиска
+- пароль для знакомства с ботом: редиска
 - аватарка с твоим лицом
 —-
 This group is intended for IT pros and IT startup-ers, located in Antalya and surroundings, to exchange on professional and semi-professional topics; also for meet-ups and gatherings.
@@ -16,6 +14,5 @@ Rules:
 - no to ads and spam
 - the group is public: you can invite friends and colleagues
 - when joining the group:
-  - for the first 24hrs messages with links will be removed (anti-spam)
-  - bot registration password: radish
+- bot registration password: radish
 - avatar with your face
