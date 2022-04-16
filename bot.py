@@ -5,9 +5,11 @@
 __author__ = "Pythonimous"
 
 from apscheduler.schedulers.background import BackgroundScheduler
-from telegram.ext import Updater, MessageHandler, CommandHandler, Filters, ConversationHandler
+from telegram.ext import Updater, MessageHandler, CommandHandler,\
+    Filters, ConversationHandler
 
-from whoisbot.callbacks import gatekeep_callback, remove_users_callback, new_user_callback
+from whoisbot.callbacks import gatekeep_callback, remove_users_callback,\
+    new_user_callback
 from whoisbot.config import token
 from whoisbot.conversation import (
     chat, CHAT,

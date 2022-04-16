@@ -51,10 +51,12 @@ def make_intro(info_dict):
     message += f"Стек технологий: {info_dict['stack']}.\n"
     message += f"На последнем проекте {info_dict['recent_project']}.\n"
     message += f"Любит {info_dict['hobby']}"
-    if info_dict["hobby_partners"]: message += "; ищет товарищей по хобби"
+    if info_dict["hobby_partners"]:
+        message += "; ищет товарищей по хобби"
     message += ".\n"
     message += f"В Анталии {lowfirst(info_dict['in_antalya'])}.\n"
-    if info_dict["looking_for_job"]: message += "В поиске работы.\n"
+    if info_dict["looking_for_job"]:
+        message += "В поиске работы.\n"
     message += '\n'
     message += "Добро пожаловать!"
     return message
@@ -70,9 +72,8 @@ def warn_user(update):
     user_data = users.find_one_and_update(filter={
         "_id": str(user_id),
         f"chats.{str(chat_id)}": {"$exists": True}},
-        update={
-            "$inc": {f"chats.{str(chat_id)}.violations": 1}
-        }, return_document=ReturnDocument.AFTER
+        update={"$inc": {f"chats.{str(chat_id)}.violations": 1}},
+        return_document=ReturnDocument.AFTER
     )
 
     if user_data["chats"][str(chat_id)]["violations"] == 1:

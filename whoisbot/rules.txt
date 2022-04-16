@@ -2,16 +2,15 @@
 Правила:
 - можно общаться на русском и английском
 - тон дружелюбный и уважительный
-- нет рекламе и спаму
 - можно приглашать друзей и коллег - группа открытая
 - пароль для знакомства с ботом: редиска
 - аватарка с твоим лицом
+- по вопросам рекламы в чате: @MisterKat
 —-
 This group is intended for IT pros and IT startup-ers, located in Antalya and surroundings, to exchange on professional and semi-professional topics; also for meet-ups and gatherings.
 Rules:
 - exchange in Russian or English
 - friendly & respectful tone
-- no to ads and spam
 - the group is public: you can invite friends and colleagues
 - when joining the group:
 - bot registration password: radish

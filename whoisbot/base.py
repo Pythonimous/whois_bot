@@ -44,12 +44,11 @@ def user_joins_chat(chat_id, user_id):
         filter={'_id': str(user_id)},
         update={
             '$set': {f"chats.{str(chat_id)}":
-                {
-                        'violations': 0,
-                        'need_intro': 1,  # flag to distinguish new and  old members and force new to introduce
-                        'info': {}
-                }
-            }
+                     {'violations': 0,
+                      'need_intro': 1,  # flag to distinguish new and  old members and force new to introduce
+                      'info': {}
+                      }
+                     }
         }
     )
     chats.update_one(
@@ -89,9 +88,7 @@ def user_leaves_chat(chat_id, user_id):
 def bot_leaves_chat(chat_id):
     chats.delete_one({'_id': str(chat_id)})
     users.update_many(filter={f"chats.{str(chat_id)}": {"$exists": True}},
-                      update={
-                          '$unset': {f"chats.{str(chat_id)}": 1}
-                      })
+                      update={'$unset': {f"chats.{str(chat_id)}": 1}})
     to_remove = []
     for user in users.find():
         if not user["chats"]:

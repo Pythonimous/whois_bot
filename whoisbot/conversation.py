@@ -4,8 +4,8 @@ from telegram.ext import ConversationHandler
 from whoisbot.config import bot, logger, users, chats
 from whoisbot.utils import introduce_user
 
-CHAT,  RULES, NAME, AGE, WHERE_FROM, HOW_LONG_ANTALYA, SPECIALTY, EXPERIENCE, STACK,\
-RECENT_PROJECTS, HOBBY, HOBBY_PARTNERS, LOOKING_JOB = range(13)
+CHAT, RULES, NAME, AGE, WHERE_FROM, HOW_LONG_ANTALYA, SPECIALTY, EXPERIENCE,\
+    STACK, RECENT_PROJECTS, HOBBY, HOBBY_PARTNERS, LOOKING_JOB = range(13)
 
 
 def start(update, _):
@@ -27,9 +27,11 @@ def start(update, _):
         chat_names = [[chat["name"]] for chat in chats.find({"_id": {"$in": user_chats}})]
 
         chats_markup = ReplyKeyboardMarkup(chat_names, one_time_keyboard=True)
-        update.message.reply_text(f"Привет! Ты ещё не представился в этих чатах.\n"
-                                  f"\nВ каком хочешь представиться?\n"
-                                  f"Или /cancel, чтобы прекратить разговор.", reply_markup=chats_markup)
+        update.message.reply_text("Привет! "
+                                  "Ты ещё не представился в этих чатах.\n"
+                                  "\nВ каком хочешь представиться?\n"
+                                  "Или /cancel, чтобы прекратить разговор.",
+                                  reply_markup=chats_markup)
         return CHAT
 
 
@@ -149,7 +151,7 @@ def stack(update, _):
     chat_id = users.find_one({"_id": user_id})["now_introducing"]
     users.update_one(filter={"_id": str(update.message.from_user.id)},
                      update={"$set": {f"chats.{chat_id}.info.stack": update.message.text}})
-    update.message.reply_text('Ок! Расскажи, пожалуйста, в 25+ словах, чем занимался(лась) на последних проектах?\n'
+    update.message.reply_text('Ок! Расскажи, пожалуйста, чем занимался(лась) на последних проектах (не менее 25 слов)\n'
                               'Если есть ссылки (и портфолио), тоже делись :)')
     return RECENT_PROJECTS
 
