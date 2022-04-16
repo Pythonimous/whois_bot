@@ -22,17 +22,23 @@ def start(update, _):
                                   "ВАЖНО: НЕ ЗАБУДЬ сделать меня администратором 😉")
         return ConversationHandler.END
 
-    else:
-        user_chats = [chat_id for chat_id, info in user_data["chats"].items() if info["need_intro"]]
-        chat_names = [[chat["name"]] for chat in chats.find({"_id": {"$in": user_chats}})]
+    user_chats = [chat_id for chat_id, info in user_data["chats"].items() if info["need_intro"]]
 
-        chats_markup = ReplyKeyboardMarkup(chat_names, one_time_keyboard=True)
-        update.message.reply_text("Привет! "
-                                  "Ты ещё не представился в этих чатах.\n"
-                                  "\nВ каком хочешь представиться?\n"
-                                  "Или /cancel, чтобы прекратить разговор.",
-                                  reply_markup=chats_markup)
-        return CHAT
+    if not user_chats:
+        update.message.reply_text("Привет! Пока что тебе представляться больше негде. "
+                                  "Скоро добавлю функцию редактирования."
+                                  "Stay tuned!")
+        return ConversationHandler.END
+
+    chat_names = [[chat["name"]] for chat in chats.find({"_id": {"$in": user_chats}})]
+
+    chats_markup = ReplyKeyboardMarkup(chat_names, one_time_keyboard=True)
+    update.message.reply_text("Привет! "
+                              "Ты ещё не представился в этих чатах.\n"
+                              "\nВ каком хочешь представиться?\n"
+                              "Или /cancel, чтобы прекратить разговор.",
+                              reply_markup=chats_markup)
+    return CHAT
 
 
 def chat(update, context):

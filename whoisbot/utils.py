@@ -30,7 +30,7 @@ def introduce_user(chat_id, user_id):
     users.update_one(filter={"_id": user_data["_id"]},
                      update={"$unset": {"now_introducing": 1,
                                         f"chats.{chat_id}.ban_at": 1},
-                             "$set": {f"chats.{message.chat.id}.greeting_id": message.id,
+                             "$set": {f"chats.{message.chat.id}.greeting_id": message.message_id,
                                       f"chats.{chat_id}.need_intro": 0,
                                       f"chats.{chat_id}.violations": 0}})
 
