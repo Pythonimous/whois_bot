@@ -49,8 +49,8 @@ def make_intro(info_dict):
     message += f"{info_dict['age']} лет от роду 🎊\n"
     message += f"{capfirst(info_dict['specialty'])} со стажем {info_dict['years_experience']} лет.\n"
     message += f"Стек технологий: {info_dict['stack']}.\n"
-    message += f"На последнем проекте {info_dict['recent_project']}.\n"
-    message += f"Любит {info_dict['hobby']}"
+    message += f"На последнем проекте {lowfirst(info_dict['recent_project'])}.\n"
+    message += f"Любит {lowfirst(info_dict['hobby'])}"
     if info_dict["hobby_partners"]:
         message += "; ищет товарищей по хобби"
     message += ".\n"
