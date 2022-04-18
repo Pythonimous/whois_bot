@@ -7,4 +7,5 @@ Removes all chat messages from users the bot does not yet know. Before writing, 
 
 Currently working on:
 
+- English translation;
 - Normal README :)
