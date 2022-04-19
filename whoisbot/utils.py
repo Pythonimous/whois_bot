@@ -90,7 +90,7 @@ def ban_user():
             if chat["_id"] in user["chats"]:
                 if "ban_at" in user["chats"][chat["_id"]]:
                     if user["chats"][chat["_id"]]["ban_at"] <= current_time:
-                        bot.sendMessage(chat["_id"], f"Banned {user['username']} for a week (no #whois in 24 hours)")
-                        banned_until = current_time + 60 * 60 * 24 * 7
+                        bot.sendMessage(chat["_id"], f"Banned {user['username']} for 3 days (no #whois in 24 hours)")
+                        banned_until = current_time + 60 * 60 * 24 * 3
                         bot.banChatMember(chat["_id"], user["_id"], until_date=banned_until)
                         user_leaves_chat(chat["_id"], user["_id"])

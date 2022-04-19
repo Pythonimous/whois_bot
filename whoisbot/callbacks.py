@@ -1,4 +1,5 @@
 import time
+import telegram
 
 from .base import new_chat, new_user, user_joins_chat, get_chat_user, user_leaves_chat, bot_leaves_chat
 from .config import bot, logger, users
@@ -60,12 +61,15 @@ def new_user_callback(update, _):
         if new_member.username:
             username = "@" + new_member.username
 
-        if username != "@who_ru_bot":
-            sent_message = bot.sendMessage(update.message.chat.id, "Добро пожаловать, {}!\n"
-                                                                   "Прежде, чем писать сюда, "
-                                                                   "напиши мне /start в личку.\n"
-                                                                   "@who_ru_bot. "
-                                                                   "Давай познакомимся ☺️".format(username))
+        if username not in {"@who_ru_bot", "@whoisit_test_bot"}:
+            sent_message = bot.sendMessage(update.message.chat.id,
+                                           "Добро пожаловать, {}! Давай познакомимся ☺\n"
+                                           "Прежде, чем общаться в чате - необходимо "
+                                           "представиться и рассказать о себе.\n"
+                                           "Для этого напиши мне в личку (@who_ru_bot) "
+                                           "команду <code>/start</code> (у тебя есть 24ч; потом запрет "
+                                           "на доступ в чат на 3 дня)".format(username),
+                                           parse_mode=telegram.ParseMode.HTML)
 
             if not users.count_documents({'_id': str(new_member.id)}):
                 new_user(new_member.id, username)

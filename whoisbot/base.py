@@ -1,4 +1,4 @@
-from .config import chats, users
+from .config import chats, users, bot
 
 
 def new_chat(chat_id, chat_name):
@@ -67,6 +67,11 @@ def get_chat_user(chat_id, user_id):
 
 
 def user_leaves_chat(chat_id, user_id):
+
+    user = get_chat_user(chat_id, user_id)
+
+    bot.deleteMessage(chat_id, user["chats"][str(chat_id)]["greeting_id"])
+
     users.update_one(
         filter={'_id': str(user_id)},
         update={

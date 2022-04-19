@@ -78,6 +78,8 @@ def rules(update, _):
         return RULES
     bot.sendMessage(user_id, 'Хорошо! Как к тебе обращаться? '
                              'Назови имя, или никнейм, если больше нравится.')
+    bot.sendMessage(user_id, 'Пожалуйста, отнесись серьёзно к заполнению '
+                             'анкеты; иначе придётся кикАть из чата!️')
     return NAME
 
 
@@ -102,7 +104,7 @@ def age(update, _):
         users.update_one(filter={"_id": str(update.message.from_user.id)},
                          update={"$set": {f"chats.{chat_id}.info.age": int(update.message.text.strip())}})
         update.message.reply_text(
-            "Ок! Откуда ты к нам приехал(а)?"
+            "Ок! Откуда ты к нам приехал(а) (город)?"
         )
         return WHERE_FROM
     except ValueError:
