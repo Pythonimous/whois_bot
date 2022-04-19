@@ -56,7 +56,8 @@ def new_user_callback(update, _):
     """ Add a new user into base list """
     logger.info("New users added!")
     for new_member in update.message.new_chat_members:
-        user_leaves_chat(update.message.chat.id, new_member.id)
+        if get_chat_user(update.message.chat.id, new_member.id):  # if user was deleted before
+            user_leaves_chat(update.message.chat.id, new_member.id)
         username = new_member.first_name
         if new_member.username:
             username = "@" + new_member.username
