@@ -25,7 +25,6 @@ from whoisbot.conversation import (
     hobby, HOBBY,
     hobby_partners, HOBBY_PARTNERS,
     looking_job, LOOKING_JOB,
-    lang_button
 )
 
 from whoisbot.conversation import info, help, start, cancel
@@ -45,7 +44,6 @@ class GatekeeperBot:
         """ Set up and start the bot """
         self.updater.dispatcher.add_handler(CommandHandler("info", info))
         self.updater.dispatcher.add_handler(CommandHandler("help", help))
-        self.updater.dispatcher.add_handler(CallbackQueryHandler(lang_button))
 
         conv_handler = ConversationHandler(
             entry_points=[CommandHandler("start", start)],

@@ -6,6 +6,7 @@ from pymongo import MongoClient
 from telegram import Bot
 
 i18n.load_path.append('whoisbot/translations')
+i18n.set('fallback', 'en')
 
 token = os.environ.get('BOT_TOKEN')
 

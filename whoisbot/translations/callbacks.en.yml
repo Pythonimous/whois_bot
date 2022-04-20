@@ -7,7 +7,6 @@ en:
     🇬🇧 Welcome, %{username}! Let's get to know each other ☺
     Before chatting here, you'll need to tell me about yourself.
     For that, message me (@who_ru_bot) <code>/start</code> (you have 24h; after that, you will be banned for 3 days)
-    P.S. If you haven't set the language yet, you might have to write <code>/start</code> twice :)
   bot_joins: |
     🇬🇧 Hey everyone!
     I'll interview all the newcomers.

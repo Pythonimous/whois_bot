@@ -26,7 +26,7 @@ def gatekeep_callback(update, _):
 
     user_data = get_chat_user(chat_id, user_id)
     if user_data:
-        lang = user_data["lang"]
+        lang = update.message.from_user.language_code
         if user_data["chats"][str(chat_id)]["need_intro"] == 1:
             if user_data["chats"][str(chat_id)]["violations"] < 2:
                 warning = warn_user(update, lang)

@@ -24,9 +24,10 @@ def username_changes(function):
     return change_names
 
 
-def set_language(function):
-    """ Create a user if they don't exist yet. Then make a language. """
-    def set_language(*args, **kwargs):
+def verify_message(function):
+    """ Remove a message if wrong chat,
+    else create a user if they don't exist yet"""
+    def verify_message(*args, **kwargs):
         update = args[0]
         user_id = update.message.from_user.id
         username = get_username(update)
@@ -39,21 +40,5 @@ def set_language(function):
 
         new_user(user_id, username)  # if the user is not yet in database add them
 
-        user_data = users.find_one(filter={"_id": str(user_id)})
-
-        if "lang" not in user_data:  # if the language is not yet set
-            new_user(user_id, username)
-            keyboard = [
-                [
-                    InlineKeyboardButton("English", callback_data="en"),
-                    InlineKeyboardButton("Русский", callback_data="ru")
-                ]
-            ]
-            lang_markup = InlineKeyboardMarkup(keyboard)
-
-            update.message.reply_text("Язык / Language ?",
-                                      reply_markup=lang_markup)
-            return ConversationHandler.END
-
         return function(*args, **kwargs)
-    return set_language
+    return verify_message

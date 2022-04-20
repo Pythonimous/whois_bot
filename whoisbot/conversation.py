@@ -3,14 +3,14 @@ from telegram.ext import ConversationHandler
 
 from whoisbot.config import bot, users, chats, i18n
 from whoisbot.utils import introduce_user
-from whoisbot.decorators import set_language
+from whoisbot.decorators import verify_message
 from whoisbot.base import get_user
 
 CHAT, RULES, NAME, AGE, WHERE_FROM, HOW_LONG_ANTALYA, SPECIALTY, EXPERIENCE,\
     STACK, RECENT_PROJECTS, HOBBY, HOBBY_PARTNERS, LOOKING_JOB = range(13)
 
 
-@set_language
+@verify_message
 def start(update, _):
     """ /start command """
     user_data = users.find_one(
@@ -18,7 +18,7 @@ def start(update, _):
             "_id": str(update.message.from_user.id)
         }
     )
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
 
     if not user_data["chats"]:
         update.message.reply_text(
@@ -46,24 +46,13 @@ def start(update, _):
     return CHAT
 
 
-def lang_button(update, _):
-    query = update.callback_query
-    query.answer()
-    query.edit_message_text(i18n.t('convo.lang_choice', locale=query.data))
-    users.update_one(
-        filter={'_id': str(query.message.chat.id)},
-        update={
-            '$set': {"lang": query.data}
-        }
-    )
-
-
 def chat(update, _):
 
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
     chat = chats.find_one(filter={"name": update.message.text})
+
     if not chat:
         bot.sendMessage(
             update.message.from_user.id,
@@ -101,7 +90,7 @@ def chat(update, _):
 
 def rules(update, _):
     user_id = str(update.message.from_user.id)
-    lang = get_user(user_id)["lang"]
+    lang = update.message.from_user.language_code
 
     if update.message.text.strip().lower() not in {"редиска", "radish"}:
         update.message.reply_text(i18n.t("convo.chat_rules_wrong_password",
@@ -119,7 +108,7 @@ def name(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
     chat_id = user_data["now_introducing"]
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
 
     users.update_one(
         filter={"_id": user_id},
@@ -136,7 +125,7 @@ def name(update, _):
 def age(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
     try:
         chat_id = user_data["now_introducing"]
         users.update_one(
@@ -160,7 +149,7 @@ def wherefrom(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
     chat_id = user_data["now_introducing"]
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
     users.update_one(
         filter={"_id": user_id},
         update={"$set": {f"chats.{chat_id}.info.from": update.message.text}})
@@ -174,7 +163,7 @@ def howlongantalya(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
     chat_id = user_data["now_introducing"]
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
     users.update_one(
         filter={"_id": user_id},
         update={
@@ -191,7 +180,7 @@ def specialty(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
     chat_id = user_data["now_introducing"]
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
     users.update_one(
         filter={"_id": user_id},
         update={
@@ -208,7 +197,7 @@ def experience(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
     chat_id = user_data["now_introducing"]
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
     try:
         users.update_one(
             filter={"_id": user_id},
@@ -231,7 +220,7 @@ def stack(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
     chat_id = user_data["now_introducing"]
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
     users.update_one(
         filter={"_id": user_id},
         update={"$set": {f"chats.{chat_id}.info.stack": update.message.text}})
@@ -247,7 +236,7 @@ def recent_projects(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
 
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
 
     if len(text.split()) < 25:
         update.message.reply_text(
@@ -270,7 +259,7 @@ def hobby(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
     chat_id = user_data["now_introducing"]
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
 
     users.update_one(
         filter={"_id": user_id},
@@ -295,7 +284,7 @@ def hobby_partners(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
     chat_id = user_data["now_introducing"]
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
 
     if update.message.text.lower().strip() in ['да', 'yes']:
         users.update_one(
@@ -321,7 +310,7 @@ def looking_job(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
     chat_id = user_data["now_introducing"]
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
 
     if update.message.text.lower().strip() in ['да', 'yes']:
         users.update_one(
@@ -343,16 +332,16 @@ def looking_job(update, _):
         i18n.t("convo.sellout", locale=lang)
     )
 
-    introduce_user(chat_id, user_id)
+    introduce_user(chat_id, user_id, lang)
 
     return ConversationHandler.END
 
 
-@set_language
+@verify_message
 def cancel(update, _):
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
 
     update.message.reply_text(
         i18n.t("convo.cancel", locale=lang),
@@ -362,12 +351,12 @@ def cancel(update, _):
     return ConversationHandler.END
 
 
-@set_language
+@verify_message
 def info(update, _):
     """ /info command """
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
 
     bot.sendMessage(
         update.message.chat.id,
@@ -375,12 +364,12 @@ def info(update, _):
     )
 
 
-@set_language
+@verify_message
 def help(update, _):
     """ /help command """
     user_id = str(update.message.from_user.id)
     user_data = get_user(user_id)
-    lang = user_data["lang"]
+    lang = update.message.from_user.language_code
 
     bot.sendMessage(
         update.message.chat.id,

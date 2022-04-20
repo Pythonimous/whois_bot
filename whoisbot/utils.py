@@ -20,11 +20,11 @@ def get_username(update):
     return username
 
 
-def introduce_user(chat_id, user_id):
+def introduce_user(chat_id, user_id, locale):
     user_data = get_chat_user(chat_id, user_id)
     info_dict = user_data["chats"][chat_id]["info"]
     info_dict["username"] = user_data["username"]
-    to_send = make_intro(info_dict, user_data["lang"])
+    to_send = make_intro(info_dict, locale)
     bot.deleteMessage(chat_id, user_data["chats"][str(chat_id)]["greeting_id"])
     message = bot.sendMessage(chat_id, to_send, parse_mode=telegram.ParseMode.HTML)
     users.update_one(filter={"_id": user_data["_id"]},
