@@ -84,10 +84,7 @@ def new_user_callback(update, _):
                 new_user(new_member.id, username)
 
             greeting_msg = i18n.t("callbacks.user_joins", username=username,
-                                  locale='ru') \
-                           + '\n' \
-                           + i18n.t("callbacks.user_joins", username=username,
-                                    locale='en')
+                                  locale=new_member.language_code)
 
             sent_message = bot.sendMessage(
                 update.message.chat.id,
