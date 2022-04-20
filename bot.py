@@ -6,7 +6,7 @@ __author__ = "Pythonimous"
 
 from apscheduler.schedulers.background import BackgroundScheduler
 from telegram.ext import Updater, MessageHandler, CommandHandler,\
-    Filters, ConversationHandler
+    Filters, ConversationHandler, CallbackQueryHandler
 
 from whoisbot.callbacks import gatekeep_callback, remove_users_callback,\
     new_user_callback
@@ -25,10 +25,11 @@ from whoisbot.conversation import (
     hobby, HOBBY,
     hobby_partners, HOBBY_PARTNERS,
     looking_job, LOOKING_JOB,
+    lang_button
 )
 
 from whoisbot.conversation import info, help, start, cancel
-from whoisbot.utils import error, ban_user
+from whoisbot.utils import ban_user#, error
 
 
 class GatekeeperBot:
@@ -44,6 +45,7 @@ class GatekeeperBot:
         """ Set up and start the bot """
         self.updater.dispatcher.add_handler(CommandHandler("info", info))
         self.updater.dispatcher.add_handler(CommandHandler("help", help))
+        self.updater.dispatcher.add_handler(CallbackQueryHandler(lang_button))
 
         conv_handler = ConversationHandler(
             entry_points=[CommandHandler("start", start)],
@@ -74,7 +76,7 @@ class GatekeeperBot:
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.left_chat_member,
                                                            remove_users_callback), group=2)
 
-        self.updater.dispatcher.add_error_handler(error)
+        #self.updater.dispatcher.add_error_handler(error)
         self.updater.start_polling()
         self.updater.idle()
 

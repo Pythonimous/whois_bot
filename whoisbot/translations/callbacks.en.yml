@@ -1,0 +1,26 @@
+en:
+  warning_one: Whoops, %{name}!
+  warning_two: Don't test my patience, %{name}!
+  warning_end: First chat with me in private.\n@who_ru_bot.
+  ban_spam: I warned you, %{name}! Chill in ban for 3 days 😊
+  user_joins: |
+    🇬🇧 Welcome, %{username}! Let's get to know each other ☺
+    Before chatting here, you need to introduce and tell about yourself.
+    For that, message me (@who_ru_bot) <code>/start</code> (you have 24h; after that, you will be banned for 3 days)
+    P.S. If you haven't yet set the language, you might have to write <code>/start</code> twice :)
+  bot_joins: |
+    🇬🇧 Hey everyone!
+    I'll interview all the newcomers.
+    The list of questions is hard-coded for now, but soon the admin will be able to set them manually. New updates coming soon :)
+    NB: Don't forget to make me an admin!
+  intro_message: |
+    #whois %{username}
+    🎉 Joining us: <b>%{name} from %{came_from}</b>, %{age} years old! 🎊
+    %{specialty} with %{experience} years of experience.
+    Tech stack: %{stack}.
+    On their latest project, %{recent_project}
+    Loves %{hobby} %{hobby_partners}
+    %{in_antalya} in Antalya.
+    %{looking_for_job} Welcome!
+  hobby_partners: ; looking for hobby partners.
+  looking_for_job: Looking for a job.

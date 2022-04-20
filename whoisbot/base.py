@@ -12,13 +12,14 @@ def new_chat(chat_id, chat_name):
 
 
 def new_user(user_id, username):
-    users.insert_one(
-        {
-            '_id': str(user_id),
-            'username': username,
-            'chats': {}
-        }
-    )
+    if not users.find_one(filter={"_id": str(user_id)}):
+        users.insert_one(
+            {
+                '_id': str(user_id),
+                'username': username,
+                'chats': {}
+            }
+        )
 
 
 def new_username(user_id, username):
@@ -59,11 +60,25 @@ def user_joins_chat(chat_id, user_id):
     )
 
 
+def get_user(user_id):
+    return users.find_one(
+        filter={"_id": str(user_id)}
+    )
+
+
 def get_chat_user(chat_id, user_id):
     return users.find_one(filter={
         "_id": str(user_id),
         f"chats.{str(chat_id)}": {"$exists": True}
     })
+
+
+def get_user_chats(user_id):
+    return get_user(user_id)["chats"]
+
+
+def get_user_language(user_id):
+    return get_user(user_id).get("lang", "en")
 
 
 def user_leaves_chat(chat_id, user_id):

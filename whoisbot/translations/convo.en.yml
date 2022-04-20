@@ -1,0 +1,65 @@
+en:
+  lang_choice: |
+    Picked English language :)
+  user_new: |
+    Hi! Just add me to a chat, and I'll do the rest.
+    NB: DON'T FORGET to make me an admin 😉
+  user_no_new_chats: |
+    Hi! No new chats for you to introduce yet. Soon I'll add /edit. Stay tuned!
+  user_new_chats: |
+    Hi! You still haven't introduced in these chats.
+    Which one would you like to introduce in?
+    Or /cancel, to interrupt the conversation.
+  unknown_chat: |
+    I don't know this chat. Please try again!
+  chat_rules_lets: Okay! Please, carefully read the chat rules first.
+  chat_rules_text: |
+    This group is intended for IT pros and IT startup-ers, located in Antalya and its suburbs, to exchange on professional and semi-professional topics.
+    Here we also coordinate meet-ups and gatherings.
+    Rules:
+    - you may chat in Russian or English
+    - friendly & respectful tone
+    - the group is public: you can invite friends and colleagues=
+    - bot registration password: radish
+    - a profile picture with your face is a must.
+  chat_rules_confirm: Did you read the rules? If so, please tell me the password.
+  chat_rules_wrong_password: Wrong password, please read the rules again :)
+  name: |
+    Cool! How should we call you? Tell me the name, or nickname, if you prefer.
+    ⚠️ Please take this interview seriously, or we will have to kick you from the chat! ⚠️
+  age_ok: Gotcha! How old are you? (please write a number)
+  age_wrong_format: Sorry, didn't get your age. Please write a number.
+  location: Ok! Where are you from? (city + country)
+  how_long_antalya: Great! How long are you in Antalya?
+  specialty: |
+    Nice! What is your specialty?
+    (С++ developer, web-designer, ...?)
+  years_experience_ok: And how long have you been in this profession? (please write a number)
+  years_experience_wrong_format: Sorry, didn't get your experience. Please write a number.
+  stack: Which technologies are you good at? What's your tech stack?
+  recent_project: |
+    Ok! Please tell us, what have you been doing at your latest projects? (25+ words).
+    If there are links (or portfolio), feel free to share :)
+  recent_project_short: Too short! Please tell me more, I am interested :)
+  hobbies: What are your hobbies? What do you enjoy doing?
+  hobby_partners: Are you looking for hobby partners?
+  looking_for_job: And the last question. Are you currently looking for a job?
+  intro_over: |
+    Thanks for your time!
+    Now everyone knows you better, and you can write in the chat :) Welcome!
+  sellout: |
+    If you'd like to support my author, please, star this repo:
+    ⭐️ https://github.com/Pythonimous/whois_bot ⭐️
+    A second of your time, and an eternal gratitude from me :) Thank you! 😊
+  cancel: As you wish. Write me if you change your mind!
+  info: |
+    Before writing to chat, where I am an admin (!), you have to answer a few simple questions about yourself.
+    Answered? Great, now everyone knows you better :)
+    Failed to answer in 24h, or tried to write in a chat before getting to know me first? 3 days' ban 😊
+    NB: don't forget to make me an admin!
+    I live here: https://github.com/Pythonimous/whois_bot.
+  help: |
+    Hi! I understand the following commands:
+    /start: introduce yourself for one of the chats I haven't seen you in yet;
+    /cancel: interrupt the current conversation, whatever we do;
+    /info: I'll tell you about myself and my purpose in life :)

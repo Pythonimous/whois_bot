@@ -4,6 +4,9 @@ import os
 from pymongo import MongoClient
 from telegram import Bot
 
+import i18n
+i18n.load_path.append('whoisbot/translations')
+
 token = os.environ.get('BOT_TOKEN')
 
 # Enable logging

@@ -4,12 +4,12 @@ import telegram
 from pymongo.collection import ReturnDocument
 
 from .base import get_chat_user, user_leaves_chat
-from .config import bot, logger, chats, users
+from .config import bot, logger, chats, users, i18n
 
-
+"""
 def error(update, context):
-    """ Log errors in the console """
     logger.warning('Update "%s" caused error "%s"', update, context.error)
+"""
 
 
 def get_username(update):
@@ -24,7 +24,7 @@ def introduce_user(chat_id, user_id):
     user_data = get_chat_user(chat_id, user_id)
     info_dict = user_data["chats"][chat_id]["info"]
     info_dict["username"] = user_data["username"]
-    to_send = make_intro(info_dict)
+    to_send = make_intro(info_dict, user_data["lang"])
     bot.deleteMessage(chat_id, user_data["chats"][str(chat_id)]["greeting_id"])
     message = bot.sendMessage(chat_id, to_send, parse_mode=telegram.ParseMode.HTML)
     users.update_one(filter={"_id": user_data["_id"]},
@@ -35,7 +35,8 @@ def introduce_user(chat_id, user_id):
                                       f"chats.{chat_id}.violations": 0}})
 
 
-def capfirst(string):  # capitalize() lowercases all the other characters, and we don't want that
+def capfirst(string):
+    # capitalize() lowercases all the other characters, and we don't want that
     return string[:1].upper() + string[1:] if string else ''
 
 
@@ -43,26 +44,27 @@ def lowfirst(string):
     return string[:1].lower() + string[1:] if string else ''
 
 
-def make_intro(info_dict):
-    message = f"#whois {info_dict['username']}\n"
-    message += f"🎉 К нам присоединился <b>{info_dict['name']} ({info_dict['from']})</b>, "
-    message += f"{info_dict['age']} лет от роду 🎊\n"
-    message += f"{capfirst(info_dict['specialty'])} со стажем {info_dict['years_experience']} лет.\n"
-    message += f"Стек технологий: {info_dict['stack']}.\n"
-    message += f"На последнем проекте {lowfirst(info_dict['recent_project'])}.\n"
-    message += f"Любит {lowfirst(info_dict['hobby'])}"
-    if info_dict["hobby_partners"]:
-        message += "; ищет товарищей по хобби"
-    message += ".\n"
-    message += f"В Анталии {lowfirst(info_dict['in_antalya'])}.\n"
-    if info_dict["looking_for_job"]:
-        message += "В поиске работы.\n"
-    message += '\n'
-    message += "Добро пожаловать!"
+def make_intro(info_dict, locale):
+    message = i18n.t(
+        "callbacks.intro_message",
+        username=info_dict['username'],
+        name=info_dict["name"],
+        came_from=info_dict['from'],
+        age=info_dict['age'],
+        specialty=capfirst(info_dict['specialty']),
+        experience=info_dict['years_experience'],
+        stack=info_dict['stack'],
+        recent_project=lowfirst(info_dict['recent_project']),
+        hobby=lowfirst(info_dict['hobby']),
+        hobby_partners=i18n.t("callbacks.hobby_partners", locale=locale) if info_dict["hobby_partners"] else ".",
+        in_antalya=lowfirst(info_dict['in_antalya']),
+        looking_for_job=i18n.t("callbacks.looking_for_job", locale=locale) if info_dict["looking_for_job"] else "\n",
+        locale=locale
+    )
     return message
 
 
-def warn_user(update):
+def warn_user(update, locale):
     """ Warn user of their 1st / 2nd #whois violation """
     chat_id = update.message.chat.id
     user_id = update.message.from_user.id
@@ -77,9 +79,13 @@ def warn_user(update):
     )
 
     if user_data["chats"][str(chat_id)]["violations"] == 1:
-        return "Ошибочка вышла, {}!".format(username)
+        return i18n.t("callbacks.warning_one",
+                      name=username,
+                      locale=locale)
     elif user_data["chats"][str(chat_id)]["violations"] == 2:
-        return "Не испытывай моё терпение, {}!".format(username)
+        return i18n.t("callbacks.warning_two",
+                      name=username,
+                      locale=locale)
 
 
 def ban_user():
@@ -90,7 +96,11 @@ def ban_user():
             if chat["_id"] in user["chats"]:
                 if "ban_at" in user["chats"][chat["_id"]]:
                     if user["chats"][chat["_id"]]["ban_at"] <= current_time:
-                        bot.sendMessage(chat["_id"], f"Banned {user['username']} for 3 days (no #whois in 24 hours)")
+                        bot.sendMessage(
+                            chat["_id"],
+                            f"Banned {user['username']} for 3 days "
+                            f"(no #whois in 24 hours)")
                         banned_until = current_time + 60 * 60 * 24 * 3
-                        bot.banChatMember(chat["_id"], user["_id"], until_date=banned_until)
+                        bot.banChatMember(chat["_id"], user["_id"],
+                                          until_date=banned_until)
                         user_leaves_chat(chat["_id"], user["_id"])
