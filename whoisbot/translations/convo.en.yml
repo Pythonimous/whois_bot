@@ -34,7 +34,7 @@ en:
   specialty: |
     Nice! What is your specialty?
     (С++ developer, web-designer, ...?)
-  years_experience_ok: And how long have you been in this profession? (please write a number)
+  years_experience_ok: And how many years have you been in this profession? (please write a number)
   years_experience_wrong_format: Sorry, didn't get your experience. Please write a number.
   stack: Which technologies are you good at? What's your tech stack?
   recent_project: |
