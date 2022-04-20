@@ -1,3 +1,4 @@
 python-telegram-bot==13.11
 APScheduler~=3.6.3
 pymongo~=4.1.0
+python-i18n[YAML]~=0.3.9
