@@ -5,9 +5,9 @@ en:
   ban_spam: I warned you, %{name}! Chill in ban for 3 days 😊
   user_joins: |
     🇬🇧 Welcome, %{username}! Let's get to know each other ☺
-    Before chatting here, you need to introduce and tell about yourself.
+    Before chatting here, you'll need to tell me about yourself.
     For that, message me (@who_ru_bot) <code>/start</code> (you have 24h; after that, you will be banned for 3 days)
-    P.S. If you haven't yet set the language, you might have to write <code>/start</code> twice :)
+    P.S. If you haven't set the language yet, you might have to write <code>/start</code> twice :)
   bot_joins: |
     🇬🇧 Hey everyone!
     I'll interview all the newcomers.
