@@ -67,7 +67,7 @@ class GatekeeperBot:
 
         self.updater.dispatcher.add_handler(conv_handler)
 
-        self.updater.dispatcher.add_handler(MessageHandler(Filters.text & (~Filters.status_update),
+        self.updater.dispatcher.add_handler(MessageHandler(Filters.all & (~Filters.status_update),
                                                            gatekeep_callback))
         self.updater.dispatcher.add_handler(MessageHandler(Filters.status_update.new_chat_members,
                                                            new_user_callback), group=1)

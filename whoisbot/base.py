@@ -1,3 +1,5 @@
+import telegram.error
+
 from .config import chats, users, bot
 
 
@@ -84,8 +86,10 @@ def get_user_language(user_id):
 def user_leaves_chat(chat_id, user_id):
 
     user = get_chat_user(chat_id, user_id)
-
-    bot.deleteMessage(chat_id, user["chats"][str(chat_id)]["greeting_id"])
+    try:
+        bot.deleteMessage(chat_id, user["chats"][str(chat_id)]["greeting_id"])
+    except telegram.error.BadRequest:
+        print('{}: {} - Message too old'.format(chat_id, user_id))
 
     users.update_one(
         filter={'_id': str(user_id)},

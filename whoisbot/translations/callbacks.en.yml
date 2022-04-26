@@ -1,7 +1,9 @@
 en:
   warning_one: Whoops, %{name}!
   warning_two: Don't test my patience, %{name}!
-  warning_end: First chat with me in private.\n@who_ru_bot.
+  warning_end: |
+    First chat with me in private.
+    @who_ru_bot.
   ban_spam: I warned you, %{name}! Chill in ban for 3 days 😊
   user_joins: |
     🇬🇧 Welcome, %{username}! Let's get to know each other ☺
