@@ -27,6 +27,7 @@ en:
   name: |
     Cool! How should we call you? Tell me the name, or nickname, if you prefer.
     ⚠️ Please take this interview seriously, or we will have to kick you from the chat! ⚠️
+    Note: the data from this interview will be made public in the chat. If you don't like this, please /cancel and leave the chat now :)
   age_ok: Gotcha! How old are you? (please write a number)
   age_wrong_format: Sorry, didn't get your age. Please write a number.
   location: Ok! Where are you from? (city + country)
