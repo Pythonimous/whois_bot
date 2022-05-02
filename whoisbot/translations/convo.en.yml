@@ -24,8 +24,21 @@ en:
     - a profile picture with your face is a must.
   chat_rules_confirm: Did you read the rules? If so, please tell me the password.
   chat_rules_wrong_password: Wrong password, please read the rules again :)
+  advertisement: |
+    Great!
+    A small advertisement from our admin:
+    An American startup is looking for a full-stack typescript senior (8+ yrs of exp) or strong middle level engineer (5+ yrs of exp).
+    For the first several months the focus is gonna be on the front-end, pls keep that in mind.
+    English level: enough to communicate on stand-ups; ideal if you have knowledge of the Chrome extensions API.
+    Project Stack: React Web App, Google Cloud Platform + Functions, Chrome Extension
+    Qualifying stages:
+      - technical interview, about 3 hours, where you demonstrate, how you write code in real time; and also how well you are be able to understand the code of others
+      - interview with the founder
+      - paid trial period of 6 weeks (3 sprints)
+    For details, contact @MisterKat.
+    Attention: Due to the sanctions, we cannot pay salary to Russian\Belarus banks; neither crypto - pls keep that in mind, when applying.
   name: |
-    Cool! How should we call you? Tell me the name, or nickname, if you prefer.
+    Now, how should we call you? Tell me the name, or nickname, if you prefer.
     ⚠️ Please take this interview seriously, or we will have to kick you from the chat! ⚠️
     Note: the data from this interview will be made public in the chat. If you don't like this, please /cancel and leave the chat now :)
   age_ok: Gotcha! How old are you? (please write a number)

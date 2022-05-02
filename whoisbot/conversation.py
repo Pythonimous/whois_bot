@@ -89,13 +89,16 @@ def chat(update, _):
 
 
 def rules(update, _):
-    user_id = str(update.message.from_user.id)
     lang = update.message.from_user.language_code
 
     if update.message.text.strip().lower() not in {"редиска", "radish"}:
         update.message.reply_text(i18n.t("convo.chat_rules_wrong_password",
                                          locale=lang))
         return RULES
+    bot.sendMessage(
+        update.message.from_user.id,
+        i18n.t("convo.advertisement", locale=lang)
+    )
     bot.sendMessage(
         update.message.from_user.id,
         i18n.t("convo.name", locale=lang)

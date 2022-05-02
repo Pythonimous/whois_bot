@@ -25,7 +25,10 @@ def introduce_user(chat_id, user_id, locale):
     info_dict = user_data["chats"][chat_id]["info"]
     info_dict["username"] = user_data["username"]
     to_send = make_intro(info_dict, locale)
-    bot.deleteMessage(chat_id, user_data["chats"][str(chat_id)]["greeting_id"])
+    try:
+        bot.deleteMessage(chat_id, user_data["chats"][str(chat_id)]["greeting_id"])
+    except telegram.error.BadRequest:
+        pass
     message = bot.sendMessage(chat_id, to_send, parse_mode=telegram.ParseMode.HTML)
     users.update_one(filter={"_id": user_data["_id"]},
                      update={"$unset": {"now_introducing": 1,
