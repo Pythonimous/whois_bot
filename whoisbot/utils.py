@@ -92,18 +92,20 @@ def warn_user(update, locale):
 
 
 def ban_user():
-    """ Automatically ban users that haven't introduced themselves in 24 hours """
+    """ Automatically ban users that haven't introduced themselves in 24 h. """
     current_time = time.time()
     for chat in chats.find():
+        message_text = "Banned users: "
         for user in users.find():
             if chat["_id"] in user["chats"]:
                 if "ban_at" in user["chats"][chat["_id"]]:
                     if user["chats"][chat["_id"]]["ban_at"] <= current_time:
-                        bot.sendMessage(
-                            chat["_id"],
-                            f"Banned {user['username']} for 3 days "
-                            f"(no #whois in 24 hours)")
+                        message_text += user['username'] + ", "
                         banned_until = current_time + 60 * 60 * 24 * 3
                         bot.banChatMember(chat["_id"], user["_id"],
                                           until_date=banned_until)
                         user_leaves_chat(chat["_id"], user["_id"])
+        message_text += "for 1 day (no #whois in 24 hours)"
+        bot.sendMessage(
+            chat["_id"],
+            message_text)

@@ -45,7 +45,7 @@ def gatekeep_callback(update, _):
                            name=username,
                            locale=lang)
                 )
-                banned_until = time.time() + 60 * 60 * 24 * 3
+                banned_until = time.time() + 60 * 60 * 24
                 bot.banChatMember(chat_id, user_id,
                                   until_date=banned_until)
 
