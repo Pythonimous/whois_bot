@@ -106,6 +106,7 @@ def ban_user():
                                           until_date=banned_until)
                         user_leaves_chat(chat["_id"], user["_id"])
         message_text += "for 1 day (no #whois in 24 hours)"
-        bot.sendMessage(
-            chat["_id"],
-            message_text)
+        if message_text != "Banned users: for 1 day (no #whois in 24 hours)":
+            bot.sendMessage(
+                chat["_id"],
+                message_text)
